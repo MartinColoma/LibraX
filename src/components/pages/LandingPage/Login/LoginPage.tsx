@@ -64,7 +64,7 @@ const StaffLogin: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API
 
       if (formData.email === 'admin@example.com' && formData.password === 'admin123') {
-        navigate('/librarian/dashboard'); // Adjust route as needed
+        navigate('/librarian/dashboard/home');
       } else {
         setErrors(prev => ({
           ...prev,
@@ -83,8 +83,15 @@ const StaffLogin: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigate('/'); // Back to home
+    navigate('/');
   };
+
+  // ✅ Disable if invalid or during loading
+  const isFormInvalid =
+    !formData.email ||
+    !/\S+@\S+\.\S+/.test(formData.email) ||
+    !formData.password ||
+    formData.password.length < 6;
 
   return (
     <div className="staff-login-page">
@@ -116,58 +123,55 @@ const StaffLogin: React.FC = () => {
               <h2 className="login-title">STAFF LOGIN</h2>
 
               <form onSubmit={handleSubmit} className="staff-login-form">
-              <div className="form-group">
-                <div className="form-label-row">
-                  <label htmlFor="email" className="form-label">Email:</label>
-                  {errors.email && <div className="form-error-inline">{errors.email}</div>}
-                </div>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  placeholder="Enter your email"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="form-group">
-                <div className="form-label-row">
-                  <label htmlFor="password" className="form-label">Password:</label>
-                  {errors.password && <div className="form-error-inline">{errors.password}</div>}
-                </div>
-                <div className="password-input-container-floating">
+                <div className="form-group">
+                  <div className="form-label-row">
+                    <label htmlFor="email" className="form-label">Email:</label>
+                    {errors.email && <div className="form-error-inline">{errors.email}</div>}
+                  </div>
                   <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    name="password"
-                    value={formData.password}
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleInputChange}
-                    className="form-input with-floating-icon"
-                    placeholder="Enter your password"
+                    className="form-input"
+                    placeholder="Enter your email"
                     disabled={isLoading}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="password-toggle-btn-floating"
-                    disabled={isLoading}
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
                 </div>
-              </div>
 
-
-
+                <div className="form-group">
+                  <div className="form-label-row">
+                    <label htmlFor="password" className="form-label">Password:</label>
+                    {errors.password && <div className="form-error-inline">{errors.password}</div>}
+                  </div>
+                  <div className="password-input-container-floating">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      className="form-input with-floating-icon"
+                      placeholder="Enter your password"
+                      disabled={isLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="password-toggle-btn-floating"
+                      disabled={isLoading}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
 
                 {/* Submit */}
                 <button
                   type="submit"
                   className="btn btn-primary btn-large btn-full-width"
-                  disabled={isLoading}
+                  disabled={isLoading || isFormInvalid}
                 >
                   {isLoading ? (
                     <div className="loading-spinner">
@@ -186,19 +190,9 @@ const StaffLogin: React.FC = () => {
                   className="btn btn-secondary btn-large btn-full-width"
                   disabled={isLoading}
                 >
-                  Cancel
+                  Go back to Home
                 </button>
               </form>
-              {/* Demo Credentials */}
-              {/* <div className={`demo-credentials`}>
-                <p className={`demo-credentials-title`}>
-                  Demo Credentials:
-                </p>
-                <p className={`demo-credentials-text`}>
-                  Email: admin@example.com<br />
-                  Password: password123
-                </p>
-              </div> */}
             </div>
           </div>
         </div>

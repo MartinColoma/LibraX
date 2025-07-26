@@ -312,14 +312,13 @@
 }
 
 .btn-secondary {
+  text-transform: none;
   background: transparent;
-  color: #9333ea;
-  border: 2px solid #9333ea;
+  color: #666;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #9333ea;
-  color: white;
+  color: #a100ff;
 }
 
 .btn-large {

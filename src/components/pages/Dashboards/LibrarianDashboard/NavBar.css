@@ -35,6 +35,9 @@
 }
 
 .sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between icon and label */
   text-decoration: none;
   color: #ccc;
   padding: 0.6rem 1rem;
@@ -50,6 +53,14 @@
 .sidebar-link.active {
   background-color: #a855f7;
   color: white;
+}
+
+.sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: inherit;
 }
 
 .sidebar-footer {
