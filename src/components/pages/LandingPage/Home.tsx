@@ -2,8 +2,10 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Users } from 'lucide-react';
 import './/Home.css';
+import usePageMeta from '../../../hooks/usePageMeta';
 
 const Home: React.FC = () => {
+  usePageMeta("Honor of Knowledge Library", "HoKLibrary 128x128.png");
   const navigate = useNavigate();
 
   const handleRedirect = (path: string) => {

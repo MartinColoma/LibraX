@@ -1,14 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-body{
-    font-family: 'Inter', sans-serif;
-    margin: auto;
-    scroll-behavior: auto;
-    overflow: auto;
-    background-color: #101010;
-    min-height: 100vh;
+/* Base Reset & Global Styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #101010;
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
 }
-body::-webkit-scrollbar{
-    width: 0px;
-    background: transparent;
+
+*, *::before, *::after {
+  box-sizing: inherit;
 }
+
+/* Optional scrollbar hiding */
+/*
+body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+*/

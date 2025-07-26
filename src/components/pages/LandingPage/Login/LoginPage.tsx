@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
+import usePageMeta from '../../../../hooks/usePageMeta';
 
 const StaffLogin: React.FC = () => {
   const navigate = useNavigate();
+  usePageMeta("HOK - Login", "HoKLibrary 128x128.png");
 
   const [formData, setFormData] = useState({
     email: '',

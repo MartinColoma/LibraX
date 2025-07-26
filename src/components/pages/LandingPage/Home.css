@@ -1,23 +1,29 @@
 /* Landing Page - Dark Mode Only */
 
-/* Page Container */
+/* Base Container */
 .landing-page {
-  min-height: 100vh;
-  background-color: #000000;
-  color: #ffffff;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
   overflow: hidden;
+  animation: fadeInUp 0.6s ease-out forwards;
 }
-/* Background Elements */
+
+.landing-page * {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Background Layers */
 .landing-background {
   position: absolute;
   inset: 0;
   opacity: 0.05;
-
+  pointer-events: none;
 }
 
 .landing-gradient {
@@ -26,9 +32,7 @@
   background: linear-gradient(to top, rgba(147, 51, 234, 0.25), rgba(59, 130, 246, 0));
 }
 
-
-
-/* Top Controls */
+/* Controls (Top or Bottom) */
 .landing-top-right-controls {
   position: absolute;
   top: 1.5rem;
@@ -40,20 +44,20 @@
   transition: all 0.3s ease;
 }
 
-
+/* Login Button */
 .login-btn {
-  display: inline-flex;            /* Align icon and text inline */
-  align-items: center;            /* Vertically center the content */
-  gap: 0.5rem;                    /* Add spacing between icon and text */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1.5rem;
-  border-radius: 9999px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
   font-size: 1rem;
+  font-weight: 600;
   letter-spacing: 0.05em;
+  border: none;
+  border-radius: 9999px;
   background-color: #9333ea;
-  color: #ffffff;
+  color: #fff;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -63,6 +67,10 @@
   box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
 }
 
+.login-btn:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
 
 /* Title Section */
 .title-section {
@@ -85,53 +93,55 @@
   color: #d1d5db;
 }
 
-/* Button Container */
+/* Button Wrapper */
 .button-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   width: 100%;
   max-width: 28rem;
-  padding: 0 1rem; /* Add this */
-  box-sizing: border-box; /* Ensure padding doesn’t overflow */
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
-
-/* Buttons */
+/* General Button Styles */
 .landing-btn {
-  padding: 1rem 2rem;
-  border-radius: 9999px;
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
-  border: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  transition: all 0.2s ease;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 9999px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .landing-btn:hover {
   transform: scale(1.05);
 }
 
+.landing-btn:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
 /* Member Button */
 .member-btn {
   background-color: #9333ea;
-  color: #ffffff;
+  color: #fff;
   box-shadow: 0 4px 14px rgba(147, 51, 234, 0.4);
 }
 
 .member-btn:hover {
   background-color: #7c3aed;
-  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.6);
   border: 2px solid #fff;
-  color: #ffffff;
-
+  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.6);
 }
 
 /* Guest Button */
@@ -146,7 +156,7 @@
   color: #000;
 }
 
-/* Hover Effects */
+/* Hover Gradient Effects */
 .landing-btn::before {
   content: '';
   position: absolute;
@@ -168,35 +178,30 @@
   opacity: 1;
 }
 
-/* Focus State for Accessibility */
-.landing-btn:focus,
-.login-btn:focus {
-  outline: 2px solid #60a5fa;
-  outline-offset: 2px;
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive Typography */
 @media (min-width: 768px) {
-  .main-title {
-    font-size: 4rem;
-  }
-
-  .subtitle {
-    font-size: 1.5rem;
-  }
+  .main-title { font-size: 4rem; }
+  .subtitle { font-size: 1.5rem; }
 }
 
 @media (min-width: 1024px) {
-  .main-title {
-    font-size: 5rem;
-  }
-
-  .subtitle {
-    font-size: 1.75rem;
-  }
+  .main-title { font-size: 5rem; }
+  .subtitle { font-size: 1.75rem; }
 }
 
-/* Responsive Button Scaling for Smaller Devices */
+/* Responsive Buttons */
 @media (max-width: 768px) {
   .landing-btn {
     padding: 0.75rem 1.5rem;
@@ -226,7 +231,6 @@
     max-width: 90%;
   }
 
-  /* Move login button to bottom-right on small screens */
   .landing-top-right-controls {
     position: fixed;
     top: auto;
@@ -244,27 +248,4 @@
     width: 18px;
     height: 18px;
   }
-}
-
-
-
-/* Animation */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.landing-page > * {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Smooth transitions */
-.landing-page * {
-  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
