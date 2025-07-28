@@ -13,7 +13,7 @@
   color: #ffffff;
   padding: 60px;
   border-radius: 20px;
-  width: 500;
+  width: 500px;
   max-width: 95%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -58,11 +58,26 @@
   gap: 8px;
 }
 
+.formLabelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 10px 5px 10px;
+}
+
 .formGroup label {
   font-size: 16px;
   font-weight: 600;
   color: #e5e5e5;
-  margin: 0 0 5px 10px;
+  margin: 0;
+}
+
+.formErrorInline {
+  color: #ef4444;
+  font-size: 14px;
+  white-space: nowrap;
+  margin-left: 10px;
+  flex-shrink: 0;
 }
 
 .formGroup input {
