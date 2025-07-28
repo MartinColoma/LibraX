@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../DashNavBar';
+import Sidebar from '../NavBar/DashNavBar';
 import './Dash_Payment.css';
 import usePageMeta from '../../../../../hooks/usePageMeta';
 

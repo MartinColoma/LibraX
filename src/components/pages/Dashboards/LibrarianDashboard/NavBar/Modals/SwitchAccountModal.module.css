@@ -1,0 +1,185 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modalContent {
+  background: #1a1a1a;
+  color: #ffffff;
+  padding: 60px;
+  border-radius: 20px;
+  width: 500;
+  max-width: 95%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border: 2px solid #9333ea;
+}
+
+.modalTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 30px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  color: #888;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.modalCloseBtn:hover {
+  color: #9333ea;
+}
+
+.modalLoginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e5e5e5;
+  margin: 0 0 5px 10px;
+}
+
+.formGroup input {
+  padding: 15px 20px;
+  border: 2px solid #333;
+  border-radius: 9999px;
+  background: #000000;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+}
+
+.formGroup input::placeholder {
+  color: #888;
+}
+
+.passwordInputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.passwordInputContainer input {
+  padding-top: 22px;
+}
+
+.eyeBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #000;
+  border: none;
+  padding: 4px;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.3s ease;
+}
+
+.eyeBtn:hover {
+  color: #9333ea;
+}
+
+.btnPrimary {
+  padding: 18px 36px;
+  border: none;
+  border-radius: 9999px;
+  font-size: 18px;
+  font-weight: 600;
+  background: #9333ea;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+}
+
+.btnPrimary:disabled {
+  background: #666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.formError {
+  color: #ef4444;
+  font-size: 14px;
+  margin-top: 5px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.animateSpin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 40px 30px;
+    border-radius: 30px;
+  }
+
+  .modalTitle {
+    font-size: 24px;
+  }
+
+  .btnPrimary {
+    font-size: 16px;
+  }
+}
