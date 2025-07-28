@@ -1,0 +1,251 @@
+/* Landing Page - Dark Mode Only */
+
+/* Base Container */
+.landing-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.landing-page * {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Background Layers */
+.landing-background {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.landing-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(147, 51, 234, 0.25), rgba(59, 130, 246, 0));
+}
+
+/* Controls (Top or Bottom) */
+.landing-top-right-controls {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 20;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* Login Button */
+.login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 9999px;
+  background-color: #9333ea;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.login-btn:hover {
+  background-color: #7c3aed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+}
+
+.login-btn:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* Title Section */
+.title-section {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: #d1d5db;
+}
+
+/* Button Wrapper */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 28rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* General Button Styles */
+.landing-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.landing-btn:hover {
+  transform: scale(1.05);
+}
+
+.landing-btn:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* Member Button */
+.member-btn {
+  background-color: #9333ea;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.4);
+}
+
+.member-btn:hover {
+  background-color: #7c3aed;
+  border: 2px solid #fff;
+  box-shadow: 0 8px 25px rgba(147, 51, 234, 0.6);
+}
+
+/* Guest Button */
+.guest-btn {
+  background-color: transparent;
+  border: 2px solid #9333ea;
+  color: #fff;
+}
+
+.guest-btn:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+/* Hover Gradient Effects */
+.landing-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.member-btn::before {
+  background: linear-gradient(45deg, rgba(147, 51, 234, 0.3), rgba(124, 58, 237, 0.3));
+}
+
+.guest-btn::before {
+  background: linear-gradient(45deg, rgba(147, 51, 234, 0.1), rgba(124, 58, 237, 0.1));
+}
+
+.landing-btn:hover::before {
+  opacity: 1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Typography */
+@media (min-width: 768px) {
+  .main-title { font-size: 4rem; }
+  .subtitle { font-size: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .main-title { font-size: 5rem; }
+  .subtitle { font-size: 1.75rem; }
+}
+
+/* Responsive Buttons */
+@media (max-width: 768px) {
+  .landing-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    gap: 0.4rem;
+  }
+
+  .landing-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
+    margin: 0 1rem;
+  }
+
+  .landing-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .button-container {
+    max-width: 90%;
+  }
+
+  .landing-top-right-controls {
+    position: fixed;
+    top: auto;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 30;
+  }
+
+  .login-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .login-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}

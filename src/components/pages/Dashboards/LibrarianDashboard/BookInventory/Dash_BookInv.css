@@ -1,0 +1,31 @@
+/* Layout container for the entire page */
+.page-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Main content area that adjusts to remaining space */
+.main-content {
+  flex: 1;
+  margin-left: 0; /* Let flexbox handle the spacing */
+  padding: 20px;
+  background-color: #101010;
+  overflow-y: auto;
+}
+
+/* Your existing container styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Your existing heading styles */
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
