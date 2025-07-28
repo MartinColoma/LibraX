@@ -5,7 +5,7 @@ import {
   BookOpen,
   CreditCard
 } from 'lucide-react';
-import './NavBar.css';
+import './DashNavBar.css';
 
 const Sidebar = () => {
   const navItems = [

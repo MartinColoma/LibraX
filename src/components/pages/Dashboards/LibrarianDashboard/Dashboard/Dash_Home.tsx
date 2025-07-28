@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../NavBar';
+import Sidebar from '../DashNavBar';
 import './Dash_Home.css';
 import usePageMeta from '../../../../../hooks/usePageMeta';
 
