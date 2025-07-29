@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import './DashNavBar.css';
 import SwitchAccountModal from './Modals/SwitchAccountModal';
+import CreateAccountModal from './Modals/CreateAccountModal';
 
 const Sidebar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,6 +37,7 @@ const Sidebar = () => {
   }, []);
 
   const isSwitchAccountModal = location.pathname === '/librarian/dashboard/switch-account';
+  const isCreateAccountModal = location.pathname === '/librarian/dashboard/create-account';
 
   return (
     <>
@@ -78,8 +80,23 @@ const Sidebar = () => {
               >
                 Switch Account
               </button>
-              <button className="dropdown-item">Create Account</button>
-              <button className="dropdown-item" onClick={() => navigate('/login')}>Logout</button>
+              <button
+                className="dropdown-item"
+                onClick={() => {
+                  setMenuOpen(false);
+                  navigate('/librarian/dashboard/create-account', {
+                    state: { backgroundLocation: location }
+                  });
+                }}
+              >
+                Create Account
+              </button>
+              <button
+                className="dropdown-item"
+                onClick={() => navigate('/login')}
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>
@@ -87,7 +104,17 @@ const Sidebar = () => {
 
       {isSwitchAccountModal && (
         <SwitchAccountModal
-          onClose={() => navigate(location.state?.backgroundLocation || '/librarian/dashboard/home')}
+          onClose={() =>
+            navigate(location.state?.backgroundLocation || '/librarian/dashboard/home')
+          }
+        />
+      )}
+
+      {isCreateAccountModal && (
+        <CreateAccountModal
+          onClose={() =>
+            navigate(location.state?.backgroundLocation || '/librarian/dashboard/home')
+          }
         />
       )}
     </>

@@ -11,6 +11,7 @@ import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/Bo
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 //Modals
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
+import CreateAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/CreateAccountModal';
 
 const AppRoutes: React.FC = () => {
   const location = useLocation();
@@ -37,6 +38,13 @@ const AppRoutes: React.FC = () => {
             path="/librarian/dashboard/switch-account"
             element={createPortal(
               <SwitchAccountModal onClose={() => window.history.back()} />,
+              document.body
+            )}
+          />
+          <Route
+            path="/librarian/dashboard/create-account"
+            element={createPortal(
+              <CreateAccountModal onClose={() => window.history.back()} />,
               document.body
             )}
           />

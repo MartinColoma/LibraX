@@ -52,17 +52,27 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
     if (isLoading || !validateForm()) return;
 
     setIsLoading(true);
-    try {
-      await new Promise(res => setTimeout(res, 1500));
 
-      if (formData.email === 'admin@example.com' && formData.password === 'admin123') {
+    try {
+      await new Promise(res => setTimeout(res, 1500)); // Simulate API call
+
+      const correctEmail = 'admin@example.com';
+      const correctPassword = 'admin123';
+
+      if (formData.email === correctEmail && formData.password === correctPassword) {
         window.location.href = '/librarian/dashboard/home';
       } else {
-        setErrors(prev => ({
-          ...prev,
-          password: 'Invalid credentials'
-        }));
+        const newErrors = { email: '', password: '' };
+
+        if (formData.email !== correctEmail) {
+          newErrors.email = 'Email not found';
+        } else if (formData.password !== correctPassword) {
+          newErrors.password = 'Incorrect password';
+        }
+
+        setErrors(newErrors);
       }
+
     } catch {
       setErrors(prev => ({
         ...prev,
@@ -82,14 +92,15 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
   return ReactDOM.createPortal(
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <button className={styles.modalCloseBtn} onClick={onClose}><X size={18} /></button>
+        <button className={styles.modalCloseBtn} onClick={onClose}>
+          <X size={18} />
+        </button>
         <h2 className={styles.modalTitle}>Switch Account</h2>
 
         <form onSubmit={handleSubmit} className={styles.modalLoginForm}>
           <div className={styles.formGroup}>
             <label>Email:</label>
             {errors.email && <div className={styles.formError}>{errors.email}</div>}
-
             <input
               type="email"
               name="email"
