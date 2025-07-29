@@ -7,7 +7,7 @@ import {
   BookOpen,
   CreditCard
 } from 'lucide-react';
-import './DashNavBar.css';
+import './AdminDashNavBar.css';
 import SwitchAccountModal from './Modals/SwitchAccountModal';
 import CreateAccountModal from './Modals/CreateAccountModal';
 
@@ -64,7 +64,7 @@ const Sidebar = () => {
         <div className="sidebar-footer" ref={dropdownRef}>
           <div className="user-info" onClick={toggleMenu}>
             <small>Logged in as</small>
-            <div className="username clickable">Librarian_No.1 ▾</div>
+            <div className="username clickable">Admin No.1 ▾</div>
           </div>
 
           {menuOpen && (

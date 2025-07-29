@@ -63,13 +63,21 @@ const StaffLogin: React.FC = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API
 
-      if (formData.email === 'admin@example.com' && formData.password === 'admin123') {
+      const correctEmail = 'admin@example.com';
+      const correctPassword = 'admin123';
+
+      if (formData.email === correctEmail && formData.password === correctPassword) {
         navigate('/librarian/dashboard/home');
       } else {
-        setErrors(prev => ({
-          ...prev,
-          password: 'Invalid credentials. Please try again.'
-        }));
+        const newErrors = { email: '', password: '' };
+
+        if (formData.email !== correctEmail) {
+          newErrors.email = 'Email not found.';
+        } else if (formData.password !== correctPassword) {
+          newErrors.password = 'Incorrect password.';
+        }
+
+        setErrors(newErrors);
       }
 
     } catch {
@@ -86,7 +94,6 @@ const StaffLogin: React.FC = () => {
     navigate('/');
   };
 
-  // ✅ Disable if invalid or during loading
   const isFormInvalid =
     !formData.email ||
     !/\S+@\S+\.\S+/.test(formData.email) ||
