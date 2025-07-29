@@ -9,6 +9,7 @@ import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashb
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
+import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
 //Modals
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
 import CreateAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/CreateAccountModal';
@@ -25,10 +26,14 @@ const AppRoutes: React.FC = () => {
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
         <Route path="/librarian/dashboard/accounts" element={<LibDash_Acc />} />
         <Route path="/librarian/dashboard/book-inventory" element={<LibDash_BookInv />} />
         <Route path="/librarian/dashboard/payments" element={<LibDash_Pay />} />
+        {/* admin dashboard routes */}
+        <Route path="/admin/dashboard/home" element={<ADash_Home />} />
+
       </Routes>
 
       {/* Modal Route Overlay */}
