@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 //Pages
+import DbTest from './components/pages/BookTest';
 import LandingPage from './components/pages/LandingPage/Home';
 import LoginPage from './components/pages/LandingPage/Login/LoginPage';
 import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashboard/Dash_Home';
@@ -27,6 +28,7 @@ const AppRoutes: React.FC = () => {
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/db" element={<DbTest />} />
         {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
         <Route path="/librarian/dashboard/accounts" element={<LibDash_Acc />} />
