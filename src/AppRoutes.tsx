@@ -9,6 +9,7 @@ import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashb
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
+import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_RSRV';
 import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
 //Modals
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
@@ -31,6 +32,8 @@ const AppRoutes: React.FC = () => {
         <Route path="/librarian/dashboard/accounts" element={<LibDash_Acc />} />
         <Route path="/librarian/dashboard/book-inventory" element={<LibDash_BookInv />} />
         <Route path="/librarian/dashboard/payments" element={<LibDash_Pay />} />
+        <Route path="/librarian/dashboard/reservation" element={<LibDash_Reserve />} />
+
         {/* admin dashboard routes */}
         <Route path="/admin/dashboard/home" element={<ADash_Home />} />
 
@@ -39,6 +42,7 @@ const AppRoutes: React.FC = () => {
       {/* Modal Route Overlay */}
       {background && (
         <Routes>
+        {/* librarian dashboard modal routes */}
           <Route
             path="/librarian/dashboard/switch-account"
             element={createPortal(
@@ -53,7 +57,10 @@ const AppRoutes: React.FC = () => {
               document.body
             )}
           />
+        {/* admin dashboard modal routes */}
+            
         </Routes>
+
       )}
     </>
   );

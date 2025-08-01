@@ -5,7 +5,8 @@ import {
   LayoutDashboard,
   Users,
   BookOpen,
-  CreditCard
+  CreditCard,
+  ClipboardCheck
 } from 'lucide-react';
 import './DashNavBar.css';
 import SwitchAccountModal from './Modals/SwitchAccountModal';
@@ -21,7 +22,9 @@ const Sidebar = () => {
     { name: 'Dashboard', path: '/librarian/dashboard/home', icon: <LayoutDashboard size={18} /> },
     { name: 'Accounts', path: '/librarian/dashboard/accounts', icon: <Users size={18} /> },
     { name: 'Book Inventory', path: '/librarian/dashboard/book-inventory', icon: <BookOpen size={18} /> },
-    { name: 'Payments', path: '/librarian/dashboard/payments', icon: <CreditCard size={18} /> }
+    { name: 'Payments', path: '/librarian/dashboard/payments', icon: <CreditCard size={18} /> },
+    { name: 'Reservation', path: '/librarian/dashboard/reservation', icon: <ClipboardCheck size={18} /> }
+
   ];
 
   const toggleMenu = () => setMenuOpen(prev => !prev);
