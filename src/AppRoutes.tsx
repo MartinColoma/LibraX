@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 //Pages
 import DbTest from './components/pages/BookTest';
-import LandingPage from './components/pages/LandingPage/Home';
+import LandingPage from './components/pages/LandingPage//Home/Home';
 import LoginPage from './components/pages/LandingPage/Login/LoginPage';
 import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashboard/Dash_Home';
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
@@ -13,6 +13,7 @@ import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Paymen
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_RSRV';
 import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
 //Modals
+import LoginModal from './components/pages/LandingPage/Login/LoginModal';
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
 import CreateAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/CreateAccountModal';
 
@@ -27,7 +28,7 @@ const AppRoutes: React.FC = () => {
     <>
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/loginv2" element={<LoginPage />} />
         <Route path="/db" element={<DbTest />} />
         {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
@@ -44,6 +45,13 @@ const AppRoutes: React.FC = () => {
       {/* Modal Route Overlay */}
       {background && (
         <Routes>
+          <Route
+            path="/login"
+            element={createPortal(
+              <LoginModal onClose={() => window.history.back()} />,
+              document.body
+            )}
+          />
         {/* librarian dashboard modal routes */}
           <Route
             path="/librarian/dashboard/switch-account"

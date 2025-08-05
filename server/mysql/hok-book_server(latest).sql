@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 01, 2025 at 04:31 PM
+-- Generation Time: Aug 05, 2025 at 04:04 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `hok-book_server`
 --
+CREATE DATABASE IF NOT EXISTS `hok-book_server` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `hok-book_server`;
 
 -- --------------------------------------------------------
 
