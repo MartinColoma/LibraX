@@ -1,8 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { User, Users } from 'lucide-react';
 import './/Home.css';
-import usePageMeta from '../../../hooks/usePageMeta';
+import usePageMeta from '../../../../hooks/usePageMeta';
+import LoginPage from '../Login/LoginModal';
 
 const Home: React.FC = () => {
   usePageMeta("Honor of Knowledge Library", "HoKLibrary 128x128.png");
@@ -11,15 +12,23 @@ const Home: React.FC = () => {
   const handleRedirect = (path: string) => {
     navigate(path);
   };
+  const location = useLocation();
+
+  const loginmodal = location.pathname === '/login';
 
   return (
+    <>
     <div className="landing-page">
       <div className="landing-background">
         <div className="landing-gradient"></div>
       </div>
       {/* Top right login button */}
       <div className="landing-top-right-controls">
-        <button className="login-btn" onClick={() => handleRedirect('/login')}>
+        <button className="login-btn" onClick={() => {
+          navigate('/login', {
+            state: { backgroundLocation: location }
+          });
+        }}>
           {/* <LogIn size={24} /> */}
           Login
         </button>
@@ -54,6 +63,16 @@ const Home: React.FC = () => {
         </button>
       </div>
     </div>
+
+      {loginmodal && (
+        <LoginPage
+          onClose={() =>
+            navigate(location.state?.backgroundLocation || '/login')
+          }
+        />
+      )}
+  
+  </>
   );
 };
 

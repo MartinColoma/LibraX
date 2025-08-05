@@ -1,36 +1,37 @@
-// src/components/modals/SwitchAccountModal.tsx
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
-import { Eye, EyeOff, Loader2, X } from 'lucide-react';
-import styles from './SwitchAccountModal.module.css';
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import axios from "axios";
+import { Eye, EyeOff, Loader2, X } from "lucide-react";
+import styles from "./LoginModal.module.css";
 
 interface Props {
   onClose: () => void;
 }
 
-const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [errors, setErrors] = useState({ email: '', password: '' });
+const LoginPage: React.FC<Props> = ({ onClose }) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // ✅ Form validation
   const validateForm = () => {
-    const newErrors = { email: '', password: '' };
+    const newErrors = { email: "", password: "" };
     let isValid = true;
 
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Enter a valid email';
+      newErrors.email = "Enter a valid email";
       isValid = false;
     }
 
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
       isValid = false;
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Min 6 characters';
+      newErrors.password = "Min 6 characters";
       isValid = false;
     }
 
@@ -40,10 +41,10 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
     if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -54,30 +55,32 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
     setIsLoading(true);
 
     try {
-      await new Promise(res => setTimeout(res, 1500)); // Simulate API call
+      const response = await axios.post(
+        "http://localhost:5001/auth",
+        {
+          email: formData.email.trim(),
+          password: formData.password.trim(),
+        },
+        { withCredentials: true } // ✅ Needed for HttpOnly JWT cookies
+      );
 
-      const correctEmail = 'admin@hok.com';
-      const correctPassword = 'admin123';
+      // ✅ Get staff info from response
+      const staff = response.data.staff;
+      const displayName =
+        staff?.full_name || staff?.username || staff?.email || "Unknown User";
 
-      if (formData.email === correctEmail && formData.password === correctPassword) {
-        window.location.href = '/librarian/dashboard/home';
+      // ✅ Save only safe info for the sidebar display
+      sessionStorage.setItem("staff_name", displayName);
+
+      alert("Login successful!");
+      window.location.href = "/librarian/dashboard/home"; // redirect
+
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setErrors((prev) => ({ ...prev, password: "Invalid email or password" }));
       } else {
-        const newErrors = { email: '', password: '' };
-
-        if (formData.email !== correctEmail) {
-          newErrors.email = 'Email not found';
-        } else if (formData.password !== correctPassword) {
-          newErrors.password = 'Incorrect password';
-        }
-
-        setErrors(newErrors);
+        setErrors((prev) => ({ ...prev, password: "Login failed. Try again." }));
       }
-
-    } catch {
-      setErrors(prev => ({
-        ...prev,
-        password: 'Login failed. Try again.'
-      }));
     } finally {
       setIsLoading(false);
     }
@@ -95,9 +98,10 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
         <button className={styles.modalCloseBtn} onClick={onClose}>
           <X size={18} />
         </button>
-        <h2 className={styles.modalTitle}>Switch Account</h2>
+        <h2 className={styles.modalTitle}>Staff Login</h2>
 
         <form onSubmit={handleSubmit} className={styles.modalLoginForm}>
+          {/* Email Field */}
           <div className={styles.formGroup}>
             <label>Email:</label>
             {errors.email && <div className={styles.formError}>{errors.email}</div>}
@@ -111,12 +115,15 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
             />
           </div>
 
+          {/* Password Field */}
           <div className={styles.formGroup}>
             <label>Password:</label>
-            {errors.password && <div className={styles.formError}>{errors.password}</div>}
+            {errors.password && (
+              <div className={styles.formError}>{errors.password}</div>
+            )}
             <div className={styles.passwordInputContainer}>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Enter your password"
                 value={formData.password}
@@ -134,6 +141,7 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
             </div>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
             className={styles.btnPrimary}
@@ -144,7 +152,7 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
                 <Loader2 size={16} className={styles.animateSpin} /> Signing In...
               </span>
             ) : (
-              'Login'
+              "Login"
             )}
           </button>
         </form>
@@ -154,4 +162,4 @@ const SwitchAccountModal: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-export default SwitchAccountModal;
+export default LoginPage;
