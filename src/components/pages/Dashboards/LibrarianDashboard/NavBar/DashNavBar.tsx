@@ -5,7 +5,8 @@ import {
   Users,
   BookOpen,
   CreditCard,
-  ClipboardCheck
+  ClipboardCheck,
+  MoreHorizontal, // ✅ Import 3-dot icon
 } from 'lucide-react';
 import './DashNavBar.css';
 import SwitchAccountModal from './Modals/SwitchAccountModal';
@@ -18,7 +19,6 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Load display name from sessionStorage (set during login)
   const staffName = sessionStorage.getItem("staff_name") || "Unknown User";
 
   const navItems = [
@@ -42,21 +42,16 @@ const Sidebar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-const handleLogout = async () => {
-  try {
-    await axios.post("http://localhost:5001/auth/logout", {}, { withCredentials: true });
-
-    // Clear stored info
-    sessionStorage.removeItem("staff_name");
-    localStorage.removeItem("staff");
-
-    // Replace history to prevent going back
-    window.location.replace("/");
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
-
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:5001/auth/logout", {}, { withCredentials: true });
+      sessionStorage.removeItem("staff_name");
+      localStorage.removeItem("staff");
+      window.location.replace("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   const isSwitchAccountModal = location.pathname === '/librarian/dashboard/switch-account';
   const isCreateAccountModal = location.pathname === '/librarian/dashboard/create-account';
@@ -84,9 +79,14 @@ const handleLogout = async () => {
         </nav>
 
         <div className="sidebar-footer" ref={dropdownRef}>
-          <div className="user-info" onClick={toggleMenu}>
-            <small>Logged in as</small>
-            <div className="username clickable">{staffName} ▾</div>
+          <div className="user-info">
+            <div className="username">
+              <small>Logged in as</small>
+              <div className="staff-name">{staffName}</div>
+            </div>
+            <button className="menu-toggle-btn" onClick={toggleMenu}>
+              <MoreHorizontal size={20} />
+            </button>
           </div>
 
           {menuOpen && (

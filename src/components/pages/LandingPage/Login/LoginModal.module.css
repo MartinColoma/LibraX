@@ -83,7 +83,7 @@
 .formGroup input {
   padding: 15px 20px;
   border: 2px solid #333;
-  border-radius: 9999px;
+  border-radius: 1.5rem;
   background: #000000;
   color: #ffffff;
   font-size: 16px;
@@ -99,6 +99,16 @@
 .formGroup input::placeholder {
   color: #888;
 }
+/* Fix Chrome Autofill Styles */
+.formGroup input:-webkit-autofill,
+.formGroup input:-webkit-autofill:hover,
+.formGroup input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  transition: background-color 5000s ease-in-out 0s; /* Prevent flashing */
+  box-shadow: 0 0 0px 1000px #000 inset; /* Match your input background */
+  border-color: #9333ea;
+  border: 2px solid #333; /* Optional: keeps border consistent */
+}
 
 .passwordInputContainer {
   position: relative;
@@ -112,7 +122,7 @@
 
 .eyeBtn {
   position: absolute;
-  top: 15px;
+  top: 18px;
   right: 15px;
   background: #000;
   border: none;
@@ -130,7 +140,7 @@
 .btnPrimary {
   padding: 18px 36px;
   border: none;
-  border-radius: 9999px;
+  border-radius: 1.5rem;
   font-size: 18px;
   font-weight: 600;
   background: #9333ea;

@@ -78,7 +78,7 @@ router.post("/", (req, res) => {
         staff.full_name = `${staff.first_name} ${staff.last_name}`.trim();
 
         res.status(200).json({
-          message: "Login successful",
+          // message: "Login successful",
           staff,
           login_history_id: historyId
         });
@@ -94,7 +94,9 @@ router.post("/logout", (req, res) => {
     secure: false, // set true if using HTTPS
     sameSite: "lax",
   });
-  return res.status(200).json({ message: "Logged out successfully" });
+  return res.status(200).json({ 
+  //  message: "Logged out successfully" 
+  });
 });
 
 module.exports = router;
