@@ -1,31 +1,124 @@
-/* Layout container for the entire page */
 .page-layout {
   display: flex;
   min-height: 100vh;
-  width: 100%;
+  background-color: #0a0a0f;
+  color: #f1f1f1;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* Main content area that adjusts to remaining space */
+/* Offset for fixed sidebar */
 .main-content {
   flex: 1;
-  margin-left: 0; /* Let flexbox handle the spacing */
-  padding: 20px;
-  background-color: #101010;
-  overflow-y: auto;
+  margin-left: 250px; /* match sidebar width */
+  min-height: 100vh; /* Allow natural scrolling */
 }
 
-/* Your existing container styles */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+/* Header */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Your existing heading styles */
-.heading {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
+.title-header {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+}
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  gap: 10px;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 300px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.add-btn {
+  padding: 10px 20px;
+  background: linear-gradient(90deg, #6d28d9, #9333ea);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.add-btn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #7e22ce, #a855f7);
+}
+
+
+/* Table Container */
+.table-container {
+  margin-top: 10px;
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid #2d2d3a;
+}
+
+.book-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #1a1a24;
+}
+
+.book-table th,
+.book-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid #2d2d3a;
+}
+
+.book-table th {
+  background-color: #2b2b3b;
+  color: #c084fc;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.book-table tr:nth-child(even) {
+  background-color: #15151e;
+}
+
+.book-table tr:hover {
+  background-color: #3b0764;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.show-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 40px 0;
+}
+
+.show-more-btn {
+  background: linear-gradient(90deg, #6d28d9, #9333ea);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.show-more-btn:hover {
+  background: linear-gradient(90deg, #7e22ce, #a855f7);
+}
+
+.show-more-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

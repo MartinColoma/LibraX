@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react"; // ✅ added useRef, useEffect
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { Eye, EyeOff, Loader2, X } from "lucide-react";
@@ -14,7 +14,13 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Form validation
+  const emailInputRef = useRef<HTMLInputElement>(null); // ✅ create ref for email input
+
+  // ✅ Auto-focus first input on modal open
+  useEffect(() => {
+    emailInputRef.current?.focus();
+  }, []);
+
   const validateForm = () => {
     const newErrors = { email: "", password: "" };
     let isValid = true;
@@ -61,20 +67,15 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
           email: formData.email.trim(),
           password: formData.password.trim(),
         },
-        { withCredentials: true } // ✅ Needed for HttpOnly JWT cookies
+        { withCredentials: true }
       );
 
-      // ✅ Get staff info from response
       const staff = response.data.staff;
       const displayName =
         staff?.full_name || staff?.username || staff?.email || "Unknown User";
 
-      // ✅ Save only safe info for the sidebar display
       sessionStorage.setItem("staff_name", displayName);
-
-      alert("Login successful!");
-      window.location.href = "/librarian/dashboard/home"; // redirect
-
+      window.location.href = "/librarian/dashboard/home";
     } catch (error: any) {
       if (error.response?.status === 401) {
         setErrors((prev) => ({ ...prev, password: "Invalid email or password" }));
@@ -106,6 +107,7 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
             <label>Email:</label>
             {errors.email && <div className={styles.formError}>{errors.email}</div>}
             <input
+              ref={emailInputRef} // ✅ focus on this input
               type="email"
               name="email"
               placeholder="Enter your email"
@@ -141,7 +143,6 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             className={styles.btnPrimary}

@@ -1,17 +1,16 @@
-/* Layout container for the entire page */
 .page-layout {
   display: flex;
   min-height: 100vh;
-  width: 100%;
+  background-color: #0a0a0f;
+  color: #f1f1f1;
+  font-family: "Segoe UI", sans-serif;
 }
 
-/* Main content area that adjusts to remaining space */
+/* Offset for fixed sidebar */
 .main-content {
   flex: 1;
-  margin-left: 0; /* Let flexbox handle the spacing */
-  padding: 20px;
-  background-color: #101010;
-  overflow-y: auto;
+  margin-left: 250px; /* match sidebar width */
+  min-height: 100vh; /* Allow natural scrolling */
 }
 
 /* Your existing container styles */

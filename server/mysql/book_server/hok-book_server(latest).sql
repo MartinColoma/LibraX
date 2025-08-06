@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 05, 2025 at 04:04 PM
+-- Generation Time: Aug 06, 2025 at 08:32 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -52,7 +52,7 @@ INSERT INTO `authors` (`author_id`, `name`, `biography`) VALUES
 --
 
 CREATE TABLE `books` (
-  `book_id` int(11) NOT NULL,
+  `book_id` varchar(11) NOT NULL,
   `isbn` varchar(20) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `subtitle` varchar(255) DEFAULT NULL,
@@ -70,9 +70,20 @@ CREATE TABLE `books` (
 --
 
 INSERT INTO `books` (`book_id`, `isbn`, `title`, `subtitle`, `description`, `publisher`, `publication_year`, `edition`, `category_id`, `language`, `date_added`) VALUES
-(3, '9780134610993', 'Artificial Intelligence', 'A Modern Approach', 'Leading textbook on AI covering search, ML, and agents.', 'Pearson', '2020', '4th Edition', 57, 'English', '2025-08-01 22:25:03'),
-(10001, '9780441172719', 'Dune', 'The Epic Sci-Fi Saga', 'A desert planet, spice, and political intrigue.', 'Chilton Books', '1965', '1st', 9, 'English', '2025-08-01 14:08:07'),
-(10002, '9781501127625', 'Leonardo da Vinci', NULL, 'Biography of the Renaissance genius.', 'Simon & Schuster', '2017', '1st', 31, 'English', '2025-08-01 14:08:07');
+('10001', '9780441172719', 'Dune', 'The Epic Sci-Fi Saga', 'A desert planet, spice, and political intrigue.', 'Chilton Books', '1965', '1st', 9, 'English', '2025-08-01 14:08:07'),
+('10002', '9781501127625', 'Leonardo da Vinci', NULL, 'Biography of the Renaissance genius.', 'Simon & Schuster', '2017', '1st', 31, 'English', '2025-08-01 14:08:07'),
+('1212636692', 'sdf', 'zcvzsdf', 'sd', 'saf', 'tvg', '0000', 'sd', NULL, 'English', '2025-08-06 23:46:48'),
+('2251811523', '98465123', 'Again', '2', 'kj', 'MC', '2021', '2nd', NULL, 'English', '2025-08-07 00:11:59'),
+('3', '9780134610993', 'Artificial Intelligence', 'A Modern Approach', 'Leading textbook on AI covering search, ML, and agents.', 'Pearson', '2020', '4th Edition', 57, 'English', '2025-08-01 22:25:03'),
+('5479815624', '23431423', 'Meet You Again', 'When We Were Friends', NULL, 'me', '2025', '1st', NULL, 'English', '2025-08-07 00:17:37'),
+('5811577942', 'af', 'asf', 'sa', 'a', '12', '2111', 'sdf', 4, 'English', '2025-08-06 23:45:53'),
+('6046597417', '123', 'CATEGORY MISSING', 'MYSTERY', 'HUH', NULL, NULL, NULL, 4, 'English', '2025-08-07 00:38:53'),
+('7765238091', '12345', 'Me N U', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-06 23:55:02'),
+('8333534338', 'sdf', 'zcvzsdf', 'sd', 'saf', 'tvg', '0000', 'sd', NULL, 'English', '2025-08-06 23:50:22'),
+('8852722531', '321423', 'Is it success?', 'hoping', 'asdfasdfsfasd', 'MC', '2024', '3rd', NULL, 'English', '2025-08-07 00:13:05'),
+('8961152781', '12312312', 'Is this real?', 'this time', 'asdf', 'MC', '2025', '1st', NULL, 'English', '2025-08-06 23:58:24'),
+('9256822720', '98465123', 'Again', '2', 'kj', 'MC', '2021', '2nd', NULL, 'English', '2025-08-07 00:03:07'),
+('9342565543', '12345', 'Me N U', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-06 23:56:38');
 
 -- --------------------------------------------------------
 
@@ -81,7 +92,7 @@ INSERT INTO `books` (`book_id`, `isbn`, `title`, `subtitle`, `description`, `pub
 --
 
 CREATE TABLE `book_authors` (
-  `book_id` int(11) NOT NULL,
+  `book_id` varchar(11) NOT NULL,
   `author_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -90,10 +101,21 @@ CREATE TABLE `book_authors` (
 --
 
 INSERT INTO `book_authors` (`book_id`, `author_id`) VALUES
-(3, 3),
-(3, 4),
-(10001, 1),
-(10002, 2);
+('10001', 1),
+('10002', 2),
+('1212636692', 3),
+('2251811523', 1),
+('3', 3),
+('3', 4),
+('5479815624', 3),
+('5811577942', 2),
+('6046597417', 1),
+('7765238091', 2),
+('8333534338', 3),
+('8852722531', 2),
+('8961152781', 3),
+('9256822720', 1),
+('9342565543', 2);
 
 -- --------------------------------------------------------
 
@@ -102,8 +124,8 @@ INSERT INTO `book_authors` (`book_id`, `author_id`) VALUES
 --
 
 CREATE TABLE `book_copies` (
-  `copy_id` int(11) NOT NULL,
-  `book_id` int(11) NOT NULL,
+  `copy_id` varchar(20) NOT NULL,
+  `book_id` varchar(11) NOT NULL,
   `barcode` int(11) NOT NULL,
   `status` enum('Available','Borrowed','Lost','Damaged','Maintenance') DEFAULT 'Available',
   `book_condition` enum('New','Good','Fair','Damaged','Lost') DEFAULT 'Good',
@@ -116,12 +138,58 @@ CREATE TABLE `book_copies` (
 --
 
 INSERT INTO `book_copies` (`copy_id`, `book_id`, `barcode`, `status`, `book_condition`, `location`, `date_added`) VALUES
-(4, 3, 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
-(5, 3, 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
-(6, 3, 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
-(20001, 10001, 1, 'Available', 'Good', 'Sci-Fi Shelf A', '2025-08-01 22:09:44'),
-(20002, 10001, 2, 'Borrowed', 'Good', 'Sci-Fi Shelf A', '2025-08-01 22:09:44'),
-(20003, 10002, 1, 'Available', 'Good', 'Biography Shelf B', '2025-08-01 22:09:44');
+('', '5811577942', 16667976, 'Available', 'New', 'Main Shelf', '2025-08-06 23:45:53'),
+('1099045604', '8961152781', 42321345, 'Available', 'New', 'Main Shelf', '2025-08-06 23:58:24'),
+('1242142428', '9342565543', 62599870, 'Available', 'New', 'Main Shelf', '2025-08-06 23:56:38'),
+('1539779078', '2251811523', 28256016, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('1843082144', '7765238091', 17963256, 'Available', 'New', 'Main Shelf', '2025-08-06 23:55:02'),
+('1919477336', '5479815624', 91585945, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('20001', '10001', 1, 'Available', 'Good', 'Sci-Fi Shelf A', '2025-08-01 22:09:44'),
+('20002', '10001', 2, 'Borrowed', 'Good', 'Sci-Fi Shelf A', '2025-08-01 22:09:44'),
+('20003', '10002', 1, 'Available', 'Good', 'Biography Shelf B', '2025-08-01 22:09:44'),
+('2695601604', '2251811523', 79717909, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('2699031582', '9256822720', 72345832, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('3003664198', '8852722531', 70427142, 'Available', 'New', 'Main Shelf', '2025-08-07 00:13:05'),
+('3573792584', '2251811523', 54663225, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('3600171174', '2251811523', 21473641, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('3855620834', '5479815624', 65159102, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('3956706909', '7765238091', 41050658, 'Available', 'New', 'Main Shelf', '2025-08-06 23:55:02'),
+('4', '3', 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
+('4016597410', '6046597417', 86936440, 'Available', 'New', 'Main Shelf', '2025-08-07 00:38:53'),
+('4027779465', '2251811523', 73609330, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('4176848031', '8961152781', 57879747, 'Available', 'New', 'Main Shelf', '2025-08-06 23:58:24'),
+('4321561479', '9256822720', 91108567, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('4472839152', '8961152781', 66450130, 'Available', 'New', 'Main Shelf', '2025-08-06 23:58:24'),
+('4486732191', '9256822720', 27968753, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('4545175856', '5479815624', 92577570, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('4629953814', '2251811523', 28945189, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('4630717994', '9256822720', 94237418, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('4708095901', '2251811523', 86549490, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('5', '3', 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
+('5832460985', '9256822720', 46662740, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('6', '3', 0, 'Available', 'New', 'Shelf C1', '2025-08-01 00:00:00'),
+('6633776545', '9256822720', 73503275, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('7054554214', '5479815624', 66452557, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('7214281954', '8852722531', 90233613, 'Available', 'New', 'Main Shelf', '2025-08-07 00:13:05'),
+('7330043722', '5479815624', 34031450, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('7617586692', '2251811523', 20329427, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('7771906708', '5479815624', 64983696, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('7873678275', '9256822720', 37574198, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('7925939954', '9256822720', 33483708, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('7931298214', '2251811523', 83509290, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('7982497425', '8852722531', 19368906, 'Available', 'New', 'Main Shelf', '2025-08-07 00:13:05'),
+('8155391257', '8852722531', 65427274, 'Available', 'New', 'Main Shelf', '2025-08-07 00:13:05'),
+('8399596331', '5479815624', 90516515, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('8423488103', '8961152781', 53192893, 'Available', 'New', 'Main Shelf', '2025-08-06 23:58:24'),
+('8534298680', '2251811523', 19920814, 'Available', 'New', 'Main Shelf', '2025-08-07 00:11:59'),
+('8886573566', '8961152781', 65651979, 'Available', 'New', 'Main Shelf', '2025-08-06 23:58:24'),
+('8962869307', '9256822720', 95603789, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('9042487542', '5479815624', 21226463, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('9300280302', '8852722531', 70550857, 'Available', 'New', 'Main Shelf', '2025-08-07 00:13:05'),
+('9523834933', '9342565543', 69679787, 'Available', 'New', 'Main Shelf', '2025-08-06 23:56:38'),
+('9686922330', '9256822720', 65496324, 'Available', 'New', 'Main Shelf', '2025-08-07 00:03:07'),
+('9911556228', '5479815624', 43321476, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37'),
+('9968610509', '5479815624', 48648099, 'Available', 'New', 'Main Shelf', '2025-08-07 00:17:37');
 
 -- --------------------------------------------------------
 
@@ -220,8 +288,8 @@ INSERT INTO `categories` (`category_id`, `category_name`, `category_description`
 --
 
 CREATE TABLE `inventory_logs` (
-  `log_id` int(11) NOT NULL,
-  `copy_id` int(11) NOT NULL,
+  `log_id` varchar(20) NOT NULL,
+  `copy_id` varchar(20) NOT NULL,
   `action` enum('Added','Borrowed','Returned','Lost','Damaged','Repaired','Removed') NOT NULL,
   `performed_by` varchar(255) DEFAULT 'System',
   `log_date` datetime DEFAULT current_timestamp()
@@ -232,13 +300,57 @@ CREATE TABLE `inventory_logs` (
 --
 
 INSERT INTO `inventory_logs` (`log_id`, `copy_id`, `action`, `performed_by`, `log_date`) VALUES
-(5, 4, 'Added', 'Librarian', '2025-08-01 22:29:33'),
-(6, 5, 'Added', 'Librarian', '2025-08-01 22:29:33'),
-(7, 6, 'Added', 'Admin', '2025-08-01 22:29:33'),
-(30001, 20001, 'Added', 'Admin', '2025-08-01 22:09:44'),
-(30002, 20002, 'Added', 'Admin', '2025-08-01 22:09:44'),
-(30003, 20002, 'Borrowed', 'Librarian', '2025-08-01 22:09:44'),
-(30004, 20003, 'Added', 'Admin', '2025-08-01 22:09:44');
+('', '3956706909', 'Added', 'Librarian', '2025-08-06 23:55:02'),
+('1545422653', '3855620834', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('1634245737', '7617586692', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('1760637492', '9968610509', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('1897291893', '2695601604', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('2022875077', '3573792584', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('2316704867', '7931298214', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('2356960766', '9523834933', 'Added', 'Librarian', '2025-08-06 23:56:38'),
+('2361328779', '1539779078', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('2900040336', '7214281954', 'Added', 'Librarian', '2025-08-07 00:13:05'),
+('30001', '20001', 'Added', 'Admin', '2025-08-01 22:09:44'),
+('30002', '20002', 'Added', 'Admin', '2025-08-01 22:09:44'),
+('30003', '20002', 'Borrowed', 'Librarian', '2025-08-01 22:09:44'),
+('30004', '20003', 'Added', 'Admin', '2025-08-01 22:09:44'),
+('3410341145', '8962869307', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('3983004045', '9686922330', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('4147759095', '4486732191', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('4381240891', '7873678275', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('4394027266', '8886573566', 'Added', 'Librarian', '2025-08-06 23:58:24'),
+('4487950167', '4708095901', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('4549756196', '7330043722', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('4662555199', '9300280302', 'Added', 'Librarian', '2025-08-07 00:13:05'),
+('4952124004', '5832460985', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('5', '4', 'Added', 'Librarian', '2025-08-01 22:29:33'),
+('5033281188', '4176848031', 'Added', 'Librarian', '2025-08-06 23:58:24'),
+('6', '5', 'Added', 'Librarian', '2025-08-01 22:29:33'),
+('6343353437', '8534298680', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('6651222694', '1919477336', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('6721903907', '3003664198', 'Added', 'Librarian', '2025-08-07 00:13:05'),
+('6736483473', '2699031582', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('6930364823', '4472839152', 'Added', 'Librarian', '2025-08-06 23:58:24'),
+('7', '6', 'Added', 'Admin', '2025-08-01 22:29:33'),
+('7041439484', '4630717994', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('7101989151', '8155391257', 'Added', 'Librarian', '2025-08-07 00:13:05'),
+('7209775224', '1242142428', 'Added', 'Librarian', '2025-08-06 23:56:38'),
+('7542747000', '4545175856', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('7561836705', '9911556228', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('7599280134', '7771906708', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('7869547232', '4321561479', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('8073960633', '9042487542', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('8090726767', '7982497425', 'Added', 'Librarian', '2025-08-07 00:13:05'),
+('8387120016', '3600171174', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('8438711264', '1099045604', 'Added', 'Librarian', '2025-08-06 23:58:24'),
+('8446717537', '4629953814', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('8468250639', '4027779465', 'Added', 'Librarian', '2025-08-07 00:11:59'),
+('8549563129', '7054554214', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('8687995961', '6633776545', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('8867693452', '8423488103', 'Added', 'Librarian', '2025-08-06 23:58:24'),
+('9011178321', '7925939954', 'Added', 'Librarian', '2025-08-07 00:03:07'),
+('9045590453', '8399596331', 'Added', 'Librarian', '2025-08-07 00:17:37'),
+('9668256315', '4016597410', 'Added', 'Librarian', '2025-08-07 00:38:53');
 
 --
 -- Indexes for dumped tables
