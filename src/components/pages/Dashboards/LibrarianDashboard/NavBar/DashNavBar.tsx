@@ -1,20 +1,30 @@
-import { useState, useRef, useEffect } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useRef, useEffect } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
   BookOpen,
   CreditCard,
   ClipboardCheck,
-  MoreHorizontal, // ✅ Import 3-dot icon
-} from 'lucide-react';
-import './DashNavBar.css';
-import SwitchAccountModal from './Modals/SwitchAccountModal';
-import CreateAccountModal from './Modals/CreateAccountModal';
-import axios from 'axios';
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import "./DashNavBar.css";
+import SwitchAccountModal from "./Modals/SwitchAccountModal";
+import CreateAccountModal from "./Modals/CreateAccountModal";
+import axios from "axios";
 
-const Sidebar = () => {
+// Define prop types (optional, in case we want to notify parent on collapse)
+interface SidebarProps {
+  onCollapse?: (collapsed: boolean) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(
+    sessionStorage.getItem("sidebarCollapsed") === "true"
+  );
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,24 +32,54 @@ const Sidebar = () => {
   const staffName = sessionStorage.getItem("staff_name") || "Unknown User";
 
   const navItems = [
-    { name: 'Dashboard', path: '/librarian/dashboard/home', icon: <LayoutDashboard size={18} /> },
-    { name: 'Accounts', path: '/librarian/dashboard/accounts', icon: <Users size={18} /> },
-    { name: 'Book Inventory', path: '/librarian/dashboard/book-inventory', icon: <BookOpen size={18} /> },
-    { name: 'Payments', path: '/librarian/dashboard/payments', icon: <CreditCard size={18} /> },
-    { name: 'Reservation', path: '/librarian/dashboard/reservation', icon: <ClipboardCheck size={18} /> }
+    {
+      name: "Dashboard",
+      path: "/librarian/dashboard/home",
+      icon: <LayoutDashboard size={18} />,
+    },
+    {
+      name: "Accounts",
+      path: "/librarian/dashboard/accounts",
+      icon: <Users size={18} />,
+    },
+    {
+      name: "Book Inventory",
+      path: "/librarian/dashboard/book-inventory",
+      icon: <BookOpen size={18} />,
+    },
+    {
+      name: "Payments",
+      path: "/librarian/dashboard/payments",
+      icon: <CreditCard size={18} />,
+    },
+    {
+      name: "Reservation",
+      path: "/librarian/dashboard/reservation",
+      icon: <ClipboardCheck size={18} />,
+    },
   ];
 
-  const toggleMenu = () => setMenuOpen(prev => !prev);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const toggleCollapsed = () => {
+    const newState = !collapsed;
+    setCollapsed(newState);
+    sessionStorage.setItem("sidebarCollapsed", String(newState));
+    if (onCollapse) onCollapse(newState); // Notify parent if needed
+  };
 
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setMenuOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = async () => {
@@ -53,14 +93,23 @@ const Sidebar = () => {
     }
   };
 
-  const isSwitchAccountModal = location.pathname === '/librarian/dashboard/switch-account';
-  const isCreateAccountModal = location.pathname === '/librarian/dashboard/create-account';
+  const isSwitchAccountModal =
+    location.pathname === "/librarian/dashboard/switch-account";
+  const isCreateAccountModal =
+    location.pathname === "/librarian/dashboard/create-account";
 
   return (
     <>
-      <aside className="sidebar">
+      <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header">
-          <div className="logo">📚 <span>HokLibrary</span></div>
+          <div className="logo">
+            📚 <span className="logo-text">HokLibrary</span>
+          </div>
+
+          {/* Floating Collapse Button */}
+          <button className="collapse-btn floating" onClick={toggleCollapsed}>
+            {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -69,11 +118,12 @@ const Sidebar = () => {
               key={item.name}
               to={item.path}
               className={({ isActive }) =>
-                `sidebar-link${isActive ? ' active' : ''}`
+                `sidebar-link${isActive ? " active" : ""}`
               }
+              data-tooltip={item.name} // Tooltip text
             >
               <span className="sidebar-icon">{item.icon}</span>
-              <span>{item.name}</span>
+              <span className="sidebar-text">{item.name}</span>
             </NavLink>
           ))}
         </nav>
@@ -95,8 +145,8 @@ const Sidebar = () => {
                 className="dropdown-item"
                 onClick={() => {
                   setMenuOpen(false);
-                  navigate('/librarian/dashboard/switch-account', {
-                    state: { backgroundLocation: location }
+                  navigate("/librarian/dashboard/switch-account", {
+                    state: { backgroundLocation: location },
                   });
                 }}
               >
@@ -106,17 +156,14 @@ const Sidebar = () => {
                 className="dropdown-item"
                 onClick={() => {
                   setMenuOpen(false);
-                  navigate('/librarian/dashboard/create-account', {
-                    state: { backgroundLocation: location }
+                  navigate("/librarian/dashboard/create-account", {
+                    state: { backgroundLocation: location },
                   });
                 }}
               >
                 Create Account
               </button>
-              <button
-                className="dropdown-item"
-                onClick={handleLogout}
-              >
+              <button className="dropdown-item" onClick={handleLogout}>
                 Logout
               </button>
             </div>
@@ -127,7 +174,10 @@ const Sidebar = () => {
       {isSwitchAccountModal && (
         <SwitchAccountModal
           onClose={() =>
-            navigate(location.state?.backgroundLocation || '/librarian/dashboard/home')
+            navigate(
+              location.state?.backgroundLocation ||
+                "/librarian/dashboard/home"
+            )
           }
         />
       )}
@@ -135,7 +185,10 @@ const Sidebar = () => {
       {isCreateAccountModal && (
         <CreateAccountModal
           onClose={() =>
-            navigate(location.state?.backgroundLocation || '/librarian/dashboard/home')
+            navigate(
+              location.state?.backgroundLocation ||
+                "/librarian/dashboard/home"
+            )
           }
         />
       )}

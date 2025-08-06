@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import Sidebar from '../NavBar/DashNavBar';
-import './Dash_Home.css';
+import './Dash_Reserve.css';
 import usePageMeta from '../../../../../hooks/usePageMeta';
 
 
-const Dash_Home: React.FC = () => {
+const Dash_Reserve: React.FC = () => {
   usePageMeta("Dashboard - Home", "HoKLibrary 128x128.png");
     // ✅ Track sidebar collapse state (listen via storage or context)
     const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(
@@ -26,11 +26,11 @@ const Dash_Home: React.FC = () => {
           transition: "margin 0.3s ease",
         }}
       >
-        <h1 className="title-header">Library Dashboard</h1>
+        <h1 className="title-header">Reserve A Seat</h1>
 
       </main>
     </div>
   );
 };
 
-export default Dash_Home;
+export default Dash_Reserve;

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 06, 2025 at 08:32 PM
+-- Generation Time: Aug 05, 2025 at 04:02 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -43,23 +43,14 @@ CREATE TABLE `login_history` (
 
 INSERT INTO `login_history` (`history_id`, `staff_id`, `login_time`, `ip_address`, `user_agent`) VALUES
 ('1065982261', '2025000144', '2025-08-05 21:27:55', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1285588792', '2025459329', '2025-08-06 22:22:54', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('1393028785', '2025000144', '2025-08-05 21:39:43', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('1791308914', '2025459329', '2025-08-05 21:48:58', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('2414992644', '2025000144', '2025-08-05 21:55:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('3484949590', '2025000144', '2025-08-05 22:14:55', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4297424339', '2025000144', '2025-08-07 01:39:07', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6862493779', '2025185866', '2025-08-05 22:15:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('7864359348', '2025185866', '2025-08-05 21:58:57', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('7890554097', '2025000144', '2025-08-05 21:58:01', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('8245325949', '2025459329', '2025-08-05 21:28:59', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8577313434', '2025000144', '2025-08-07 01:38:27', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
 ('9467820924', '2025000144', '2025-08-05 21:27:02', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9486507619', '2025459329', '2025-08-06 19:21:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9510812359', '2025459329', '2025-08-05 22:19:48', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9734536483', '2025000144', '2025-08-06 19:05:10', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9857770480', '2025185866', '2025-08-05 21:34:42', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9954016767', '2025000144', '2025-08-06 19:15:07', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
+('9857770480', '2025185866', '2025-08-05 21:34:42', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
 
 -- --------------------------------------------------------
 
@@ -88,10 +79,10 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `email`, `phone_number`, `role`, `username`, `password_hash`, `status`, `date_hired`, `last_login`, `created_at`, `updated_at`) VALUES
-('2025000144', 'Martin', 'Coloma', 'martin@gmail.com', NULL, 'Librarian', 'morphy', '$2b$10$gSmOL.qaqp3zRbQGI3Kv8edxjniIE.f/JLus2GLdSC6PV6rh5lewu', 'Active', '2025-08-05', '2025-08-06 17:39:06', '2025-08-05 12:55:55', '2025-08-06 17:39:06'),
+('2025000144', 'Martin', 'Coloma', 'martin@gmail.com', NULL, 'Librarian', 'morphy', '$2b$10$gSmOL.qaqp3zRbQGI3Kv8edxjniIE.f/JLus2GLdSC6PV6rh5lewu', 'Active', '2025-08-05', '2025-08-05 13:58:01', '2025-08-05 12:55:55', '2025-08-05 13:58:01'),
 ('2025145279', 'John', 'Doe', 'johndoe@hok.com', NULL, 'Librarian', 'johndoe', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'Active', '2025-08-05', NULL, '2025-08-05 12:29:59', '2025-08-05 12:30:18'),
-('2025185866', 'Karl', 'Iligan', 'karl@hok.com', '09123123123', 'Admin', 'karl', '$2b$10$KOgdaw6KrkVnlAbmKFyEROwZkO4JO5ZJ0EYQafRhCCqlmnnzkWvl.', 'Active', '2025-08-05', '2025-08-05 14:15:29', '2025-08-05 13:34:17', '2025-08-05 14:15:29'),
-('2025459329', 'Earl', 'Liporada', 'earl@hok.com', NULL, 'Librarian', 'earl', '$2b$10$orxsTjMu.G.jfeCdo5L1SeA0tOpTr/9VXAM3vl0IvTbxYi7IV9zym', 'Active', '2025-08-05', '2025-08-06 14:22:54', '2025-08-05 13:28:41', '2025-08-06 14:22:54');
+('2025185866', 'Karl', 'Iligan', 'karl@hok.com', '09123123123', 'Admin', 'karl', '$2b$10$KOgdaw6KrkVnlAbmKFyEROwZkO4JO5ZJ0EYQafRhCCqlmnnzkWvl.', 'Active', '2025-08-05', '2025-08-05 13:58:57', '2025-08-05 13:34:17', '2025-08-05 13:58:57'),
+('2025459329', 'Earl', 'Liporada', 'earl@hok.com', NULL, 'Librarian', 'earl', '$2b$10$orxsTjMu.G.jfeCdo5L1SeA0tOpTr/9VXAM3vl0IvTbxYi7IV9zym', 'Active', '2025-08-05', '2025-08-05 13:48:58', '2025-08-05 13:28:41', '2025-08-05 13:48:58');
 
 --
 -- Triggers `staff`

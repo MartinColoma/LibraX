@@ -1,27 +1,44 @@
 .page-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #0a0a0f; /* Dark background */
+  background-color: #0a0a0f;
   color: #f1f1f1;
   font-family: "Segoe UI", sans-serif;
 }
 
+/* Offset for fixed sidebar */
 .main-content {
   flex: 1;
-  padding: 30px;
+  margin-left: 250px; /* match sidebar width */
+  min-height: 100vh; /* Allow natural scrolling */
 }
 
+/* Header */
 .header-section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
 }
 
 .title-header {
   font-size: 2rem;
   font-weight: 600;
-  color: #c084fc; /* Purple header */
+  color: #fff;
+}
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  gap: 10px;
+}
+
+.search-box {
+  flex: 1;
+  max-width: 300px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 .add-btn {
@@ -40,6 +57,8 @@
   background: linear-gradient(90deg, #7e22ce, #a855f7);
 }
 
+
+/* Table Container */
 .table-container {
   margin-top: 10px;
   overflow-x: auto;
@@ -62,7 +81,7 @@
 
 .book-table th {
   background-color: #2b2b3b;
-  color: #c084fc; /* Purple headers */
+  color: #c084fc;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.85rem;
@@ -73,8 +92,33 @@
 }
 
 .book-table tr:hover {
-  background-color: #3b0764; /* Purple hover */
+  background-color: #3b0764;
   color: #fff;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+}
+.show-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 40px 0;
+}
+
+.show-more-btn {
+  background: linear-gradient(90deg, #6d28d9, #9333ea);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.show-more-btn:hover {
+  background: linear-gradient(90deg, #7e22ce, #a855f7);
+}
+
+.show-more-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }

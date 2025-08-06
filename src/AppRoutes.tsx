@@ -10,7 +10,7 @@ import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashb
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
-import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_RSRV';
+import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
 import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
 //Modals
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
