@@ -5,7 +5,7 @@ import usePageMeta from '../../../../../hooks/usePageMeta';
 
 
 const Dash_Payment: React.FC = () => {
-  usePageMeta("Dashboard - Home", "HoKLibrary 128x128.png");
+  usePageMeta("Dashboard - Payment", "HoKLibrary 128x128.png");
     // ✅ Track sidebar collapse state (listen via storage or context)
     const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(
       sessionStorage.getItem("sidebarCollapsed") === "true"

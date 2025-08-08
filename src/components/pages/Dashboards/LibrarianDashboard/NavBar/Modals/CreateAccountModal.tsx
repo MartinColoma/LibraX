@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import styles from './CreateAccountModal.module.css';
-import { X } from 'lucide-react';
+import { X, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
 interface Props {
@@ -20,12 +20,12 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    // Auto-suggest username from email if empty
     if (name === 'email' && !formData.username) {
       setFormData(prev => ({ ...prev, username: value.split('@')[0] }));
     }
@@ -35,7 +35,6 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
     e.preventDefault();
     setLoading(true);
 
-    // Combine first + last name to match backend field "fullName"
     const fullName = `${formData.firstName} ${formData.lastName}`.trim();
 
     try {
@@ -47,10 +46,8 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
         phoneNumber: formData.phoneNumber
       });
 
-
       alert(response.data.message || 'Staff account created successfully!');
 
-      // Reset form
       setFormData({
         firstName: '',
         lastName: '',
@@ -61,7 +58,7 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
         password: ''
       });
 
-      onClose(); // Close modal
+      onClose();
     } catch (error: any) {
       if (error.response) {
         alert(error.response.data.error || 'Failed to create staff account');
@@ -159,16 +156,28 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
             </div>
           </div>
 
+          {/* Password Field with Show/Hide Button */}
           <div className={styles.formGroup}>
             <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter secure password"
-              required
-            />
+            <div className={styles.passwordInputContainer}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter secure password"
+                required
+                disabled={loading}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className={styles.eyeBtn}
+                disabled={loading}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <button

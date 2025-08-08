@@ -77,14 +77,30 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
       sessionStorage.setItem("staff_name", displayName);
       window.location.href = "/librarian/dashboard/home";
     } catch (error: any) {
-      if (error.response?.status === 401) {
-        setErrors((prev) => ({ ...prev, password: "Invalid email or password" }));
+      if (error.response) {
+        // Server responded with a status code
+        if (error.response.status === 401) {
+          setErrors((prev) => ({
+            ...prev,
+            password: "Invalid email or password",
+          }));
+        } else {
+          setErrors((prev) => ({
+            ...prev,
+            password: "Login failed. Try again.",
+          }));
+        }
+      } else if (error.request) {
+        // No response from server — likely connection error
+        alert("Unable to connect to the server. Please check your network or try again later.");
+        setIsLoading(false);
       } else {
-        setErrors((prev) => ({ ...prev, password: "Login failed. Try again." }));
+        // Something else happened while setting up the request
+        console.error("Axios error:", error.message);
+        alert("An unexpected error occurred.");
       }
-    } finally {
-      setIsLoading(false);
     }
+
   };
 
   const isFormInvalid =

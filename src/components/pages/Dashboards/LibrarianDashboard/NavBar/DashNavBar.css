@@ -8,7 +8,7 @@
   flex-direction: column;
   justify-content: space-between;
   background-color: #0a0a0f;
-  overflow: hidden;
+  overflow: visible;
   z-index: 150;
   transition: width 0.3s ease;
 }
@@ -20,7 +20,6 @@
 /* Hide elements when collapsed */
 .sidebar.collapsed .logo-text,
 .sidebar.collapsed .sidebar-text,
-.sidebar.collapsed .username,
 .sidebar.collapsed .staff-name,
 .sidebar.collapsed .user-info small {
   display: none;
@@ -55,7 +54,7 @@
   border-radius: 50%;
   position: absolute;
   top: 55%;
-  right: -15px;                 /* Floats slightly outside sidebar */
+  right: -30px;                 /* Floats slightly outside sidebar */
   transform: translateY(-50%);
   height: 30px;
   width: 30px;
@@ -73,7 +72,6 @@
   border-color: #3b0764;
   transform: translateY(-50%) scale(1.1);
 }
-
 
 /* Sidebar Navigation */
 .sidebar-nav {
@@ -108,17 +106,36 @@
   min-width: 20px;
 }
 
+/* Collapsed nav icon alignment fix */
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.sidebar.collapsed .sidebar-icon {
+  min-width: unset;
+  margin: 0;
+}
+
 /* Sidebar Footer */
 .sidebar-footer {
   border-top: 1px solid #333;
   padding-top: 1rem;
   position: relative;
+  overflow: visible;
 }
 
 .user-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* Collapsed footer alignment fix */
+.sidebar.collapsed .user-info {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
 .username {
@@ -143,6 +160,15 @@
 
 .menu-toggle-btn:hover {
   background-color: #333;
+}
+
+/* Collapsed ellipsis button alignment fix */
+.sidebar.collapsed .menu-toggle-btn {
+  padding: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Dropdown */
@@ -173,4 +199,13 @@
 
 .dropdown-item:hover {
   background-color: #3a3a3a;
+}
+
+/* Collapsed dropdown user name styling */
+.dropdown-user {
+  padding: 10px 15px;
+  font-weight: bold;
+  color: #fff;
+  border-bottom: 1px solid #444;
+  font-size: 14px;
 }
