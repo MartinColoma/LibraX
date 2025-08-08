@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from '../NavBar/DashNavBar';
 import './Dash_Payment.css';
 import usePageMeta from '../../../../../hooks/usePageMeta';
@@ -10,7 +11,12 @@ const Dash_Payment: React.FC = () => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(
       sessionStorage.getItem("sidebarCollapsed") === "true"
     );
-
+    const navigate = useNavigate();
+    useEffect(() => {
+      if (!sessionStorage.getItem("staff_name")) {
+        navigate("/login", { replace: true });
+      }
+    }, [navigate]);
   return (
     <div className="page-layout">
       <Sidebar onCollapse={(state: boolean) => {

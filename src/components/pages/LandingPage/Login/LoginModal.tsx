@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react"; // ✅ added useRef, useEffect
+import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { Eye, EyeOff, Loader2, X } from "lucide-react";
@@ -13,14 +13,15 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [checkingEmail, setCheckingEmail] = useState(false); // email check in progress
 
-  const emailInputRef = useRef<HTMLInputElement>(null); // ✅ create ref for email input
+  const emailInputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ Auto-focus first input on modal open
   useEffect(() => {
     emailInputRef.current?.focus();
   }, []);
 
+  // Validate basic format for email & password locally
   const validateForm = () => {
     const newErrors = { email: "", password: "" };
     let isValid = true;
@@ -28,7 +29,7 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
       isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
       newErrors.email = "Enter a valid email";
       isValid = false;
     }
@@ -45,18 +46,51 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
     return isValid;
   };
 
+  // Check if email exists in DB by calling backend API
+  const checkEmailExists = async (email: string) => {
+    if (!email || errors.email) {
+      // skip if empty or format error
+      return;
+    }
+    setCheckingEmail(true);
+    try {
+      const response = await axios.get("http://localhost:5001/auth/check-email", {
+        params: { email },
+      });
+      if (!response.data.exists) {
+        setErrors((prev) => ({ ...prev, email: "Email not registered" }));
+      } else {
+        // Clear email error if previously set
+        setErrors((prev) => ({ ...prev, email: "" }));
+      }
+    } catch {
+      // Optionally handle error gracefully, e.g.:
+      // setErrors(prev => ({ ...prev, email: "Error checking email" }));
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
+    // Clear errors for that field on change
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
+  // Call checkEmailExists when email input loses focus
+  const handleEmailBlur = () => {
+    checkEmailExists(formData.email.trim());
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLoading || !validateForm()) return;
+    if (isLoading || checkingEmail || !validateForm()) return;
+
+    if (errors.email) return; // Don't submit if email error exists (including non-existence)
 
     setIsLoading(true);
 
@@ -77,35 +111,27 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
       sessionStorage.setItem("staff_name", displayName);
       window.location.href = "/librarian/dashboard/home";
     } catch (error: any) {
-      if (error.response) {
-        // Server responded with a status code
-        if (error.response.status === 401) {
-          setErrors((prev) => ({
-            ...prev,
-            password: "Invalid email or password",
-          }));
-        } else {
-          setErrors((prev) => ({
-            ...prev,
-            password: "Login failed. Try again.",
-          }));
-        }
+      if (error.response?.status === 401) {
+        setErrors((prev) => ({
+          ...prev,
+          password: "Incorrect password",
+        }));
       } else if (error.request) {
-        // No response from server — likely connection error
-        alert("Unable to connect to the server. Please check your network or try again later.");
-        setIsLoading(false);
+        alert(
+          "Unable to connect to the server. \nPlease check your network or try again later."
+        );
       } else {
-        // Something else happened while setting up the request
         console.error("Axios error:", error.message);
         alert("An unexpected error occurred.");
       }
+    } finally {
+      setIsLoading(false);
     }
-
   };
 
   const isFormInvalid =
     !formData.email ||
-    !/\S+@\S+\.\S+/.test(formData.email) ||
+    !!errors.email || // block if email format or existence error
     !formData.password ||
     formData.password.length < 6;
 
@@ -118,22 +144,26 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
         <h2 className={styles.modalTitle}>Staff Login</h2>
 
         <form onSubmit={handleSubmit} className={styles.modalLoginForm}>
-          {/* Email Field */}
           <div className={styles.formGroup}>
             <label>Email:</label>
-            {errors.email && <div className={styles.formError}>{errors.email}</div>}
+            {errors.email && (
+              <div className={styles.formError}>{errors.email}</div>
+            )}
             <input
-              ref={emailInputRef} // ✅ focus on this input
+              ref={emailInputRef}
               type="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleInputChange}
+              onBlur={handleEmailBlur}
               disabled={isLoading}
             />
+            {checkingEmail && (
+              <small style={{ color: "#666" }}>Checking email existence...</small>
+            )}
           </div>
 
-          {/* Password Field */}
           <div className={styles.formGroup}>
             <label>Password:</label>
             {errors.password && (
@@ -162,7 +192,7 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
           <button
             type="submit"
             className={styles.btnPrimary}
-            disabled={isLoading || isFormInvalid}
+            disabled={isLoading || checkingEmail || isFormInvalid}
           >
             {isLoading ? (
               <span className={styles.loadingSpinner}>

@@ -1,21 +1,39 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-//Pages
+
+// Pages
+import PageNotFound from './components/pages/PageNotFound';
 import DbTest from './components/pages/BookTest';
-import LandingPage from './components/pages/LandingPage//Home/Home';
-import LoginPage from './components/pages/LandingPage/Login/LoginPage';
+import LandingPage from './components/pages/LandingPage/Home/Home';
 import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashboard/Dash_Home';
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
 import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
-//Modals
+
+// Modals
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
 import CreateAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/CreateAccountModal';
+
+// ✅ New: Full-page LoginPage using the same LoginModal
+const LoginPage: React.FC = () => {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        background: "#000",
+      }}
+    >
+      <LoginModal onClose={() => { window.history.back(); }} />
+    </div>
+  );
+};
 
 const AppRoutes: React.FC = () => {
   const location = useLocation();
@@ -28,8 +46,10 @@ const AppRoutes: React.FC = () => {
     <>
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/loginv2" element={<LoginPage />} />
+        <Route path='*' element={<PageNotFound />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/db" element={<DbTest />} />
+
         {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
         <Route path="/librarian/dashboard/accounts" element={<LibDash_Acc />} />
@@ -39,7 +59,6 @@ const AppRoutes: React.FC = () => {
 
         {/* admin dashboard routes */}
         <Route path="/admin/dashboard/home" element={<ADash_Home />} />
-
       </Routes>
 
       {/* Modal Route Overlay */}
@@ -52,7 +71,7 @@ const AppRoutes: React.FC = () => {
               document.body
             )}
           />
-        {/* librarian dashboard modal routes */}
+          {/* librarian dashboard modal routes */}
           <Route
             path="/librarian/dashboard/switch-account"
             element={createPortal(
@@ -67,12 +86,10 @@ const AppRoutes: React.FC = () => {
               document.body
             )}
           />
-        {/* admin dashboard modal routes */}
-            
         </Routes>
-
       )}
     </>
   );
 };
+
 export default AppRoutes;
