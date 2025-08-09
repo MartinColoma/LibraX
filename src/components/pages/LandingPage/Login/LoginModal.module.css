@@ -103,12 +103,22 @@
 .formGroup input:-webkit-autofill,
 .formGroup input:-webkit-autofill:hover,
 .formGroup input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #ffffff;
-  transition: background-color 5000s ease-in-out 0s; /* Prevent flashing */
-  box-shadow: 0 0 0px 1000px #000 inset; /* Match your input background */
-  border-color: #9333ea;
-  border: 2px solid #333; /* Optional: keeps border consistent */
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 0 1000px #000 inset !important;
+  border: 2px solid #333 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
 }
+
+.formGroup input:-webkit-autofill:focus {
+  box-shadow:
+    0 0 0 1000px #000 inset,
+    0 0 0 3px rgba(147, 51, 234, 0.1);
+  border-color: #9333ea !important;
+  caret-color: #ffffff !important;
+  transition: none !important;
+  outline: none;
+}
+
 
 .passwordInputContainer {
   position: relative;

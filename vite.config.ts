@@ -16,4 +16,5 @@ export default defineConfig({
       '@assets': resolve(__dirname, 'src/assets'),
     },
   },
+  base: process.env.VITE_BASE_PATH || "/hok-library-v2"
 })

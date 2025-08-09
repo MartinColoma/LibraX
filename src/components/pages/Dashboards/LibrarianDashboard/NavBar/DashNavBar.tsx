@@ -141,6 +141,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
 
           {menuOpen && (
             <div className="user-dropdown">
+              {/* Show logged in user name only if collapsed */}
+              {collapsed && (
+                <div className="dropdown-user">
+                  {staffName}
+                </div>
+              )}
+
               <button
                 className="dropdown-item"
                 onClick={() => {
@@ -168,6 +175,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
               </button>
             </div>
           )}
+
         </div>
       </aside>
 

@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #fff8f0;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+/* Navigation */
+header {
+  background: #b71c1c; /* deep red */
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+nav {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffeb3b; /* yellow */
+}
+nav ul {
+  list-style: none;
+  display: flex;
+}
+nav li {
+  margin-left: 20px;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+nav a:hover {
+  color: #ffeb3b;
+}
+
+/* Sections */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 50px 20px;
+}
+.section h2 {
+  color: #b71c1c;
+  margin-bottom: 20px;
+  border-bottom: 3px solid #ffeb3b;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* About */
+.intro h1 {
+  font-size: 2rem;
+  color: #b71c1c;
+}
+.tagline {
+  font-weight: 500;
+  margin: 10px 0;
+  color: #e65100; /* warm orange for variation */
+}
+.desc {
+  margin-top: 15px;
+}
+
+/* Card */
+.card {
+  background: white;
+  border-left: 6px solid #ffeb3b;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Timeline */
+.timeline {
+  list-style: none;
+}
+.timeline li {
+  margin-bottom: 15px;
+  padding-left: 20px;
+  position: relative;
+}
+.timeline li::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #b71c1c;
+  position: absolute;
+  left: 0;
+  top: 8px;
+  border-radius: 50%;
+}
+
+/* Skills Grid */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.skills-grid span {
+  background: #fff3e0; /* light yellow */
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ffe082;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Contact */
+#contact a {
+  color: #b71c1c;
+  text-decoration: none;
+}
+#contact a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+footer {
+  background: #b71c1c;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+}

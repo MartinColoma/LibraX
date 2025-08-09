@@ -99,4 +99,27 @@ router.post("/logout", (req, res) => {
   });
 });
 
+// GET /auth/check-email?email=someone@example.com
+router.get("/check-email", (req, res) => {
+  const email = req.query.email;
+  if (!email) {
+    return res.status(400).json({ error: "Email query parameter required" });
+  }
+
+  const sql = `SELECT 1 FROM staff WHERE email = ? LIMIT 1`;
+  dbLibrary.query(sql, [email], (err, results) => {
+    if (err) {
+      console.error("DB error checking email existence:", err);
+      return res.status(500).json({ error: "Database query error" });
+    }
+
+    if (results.length > 0) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  });
+});
+
+
 module.exports = router;

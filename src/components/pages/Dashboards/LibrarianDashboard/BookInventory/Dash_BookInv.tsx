@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../NavBar/DashNavBar";
 import "./Dash_BookInv.css";
 import usePageMeta from "../../../../../hooks/usePageMeta";
@@ -18,7 +19,12 @@ interface Book {
 
 const Dash_BookInv: React.FC = () => {
   usePageMeta("Dashboard - Book Inventory", "HoKLibrary 128x128.png");
-
+    const navigate = useNavigate();
+    useEffect(() => {
+      if (!sessionStorage.getItem("staff_name")) {
+        navigate("/login", { replace: true });
+      }
+    }, [navigate]);
   const [books, setBooks] = useState<Book[]>([]);
   const [displayedBooks, setDisplayedBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);

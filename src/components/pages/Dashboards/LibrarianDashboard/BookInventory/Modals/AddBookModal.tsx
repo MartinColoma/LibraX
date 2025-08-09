@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import styles from "./AddBookModal.module.css";
+import { X } from 'lucide-react';
 
 interface Props {
   onClose: () => void;
@@ -250,6 +251,9 @@ const handleChange = (
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
+       <button onClick={onClose} className={styles.modalCloseBtn}>
+          <X size={20} />
+        </button>
         <h2>Add New Book</h2>
 
         {/* Step Indicator */}
@@ -425,10 +429,6 @@ const handleChange = (
             nextBtnRef={nextBtnRef}
           />
         </form>
-
-        <button onClick={onClose} className={styles.closeBtn}>
-          Cancel
-        </button>
       </div>
     </div>
   );
