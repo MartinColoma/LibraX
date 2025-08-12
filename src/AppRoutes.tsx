@@ -46,6 +46,7 @@ const AppRoutes: React.FC = () => {
     <>
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/hok-library-v2" element={<LandingPage />} />
         <Route path='*' element={<PageNotFound />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/db" element={<DbTest />} />
