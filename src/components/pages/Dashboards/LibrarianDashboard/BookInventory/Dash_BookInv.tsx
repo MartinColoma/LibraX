@@ -6,6 +6,7 @@
   import usePageMeta from "../../../../../hooks/usePageMeta";
   import BookRowModal from "./Modals/BookRowModal";
   import AddBookModal from "./Modals/AddBookModal";
+  import UpdateBookModal from "./Modals/UpdateBookModal";
   import RowToolsModal from "./Modals/RowToolsModal";
 
   export interface Book {
@@ -30,6 +31,7 @@
     const [displayedBooks, setDisplayedBooks] = useState<Book[]>([]);
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -136,30 +138,13 @@
       setSelectedBook(book);
     };
 
-    const handleEdit = async (book: Book) => {
-      const updatedTitle = prompt("Enter new title:", book.title);
-      if (!updatedTitle) return;
+    // Add this new state for the book being edited
+    const [bookToEdit, setBookToEdit] = useState<Book | null>(null);
 
-      try {
-        const res = await fetch(
-          `http://localhost:5000/books/update_book/${book.book_id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ...book, title: updatedTitle }),
-          }
-        );
-
-        if (res.ok) {
-          alert("✅ Book updated successfully!");
-          fetchBooks(0, true);
-        } else {
-          const errData = await res.json();
-          alert(`❌ Failed to update book: ${errData.error}`);
-        }
-      } catch (error) {
-        console.error("Update error:", error);
-      }
+    // Replace your existing handleEdit function with this:
+    const handleEdit = (book: Book) => {
+      setBookToEdit(book);
+      setShowUpdateModal(true);
     };
 
     const handleDelete = async (book: Book) => {
@@ -256,7 +241,7 @@ const handleBulkDelete = async () => {
                   disabled={loading}
                   title="Delete selected books"
                 >
-                  Delete Selected
+                  Delete Row(s)
                 </button>
               )}
               <button className="add-btn" onClick={() => setShowAddModal(true)}>
@@ -293,11 +278,11 @@ const handleBulkDelete = async () => {
                       <tr
                         key={book.book_id}
                         className="clickable-row"
-                        onClick={(e) => {
-                          if ((e.target as HTMLElement).tagName !== "INPUT") {
-                            setSelectedBook(book);
-                          }
-                        }}
+                        // onClick={(e) => {
+                        //   if ((e.target as HTMLElement).tagName !== "INPUT") {
+                        //     setSelectedBook(book);
+                        //   }
+                        // }}
                       >
                         <td>
                           <input
@@ -326,7 +311,7 @@ const handleBulkDelete = async () => {
                             className="action-btn edit-btn"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleEdit(book);
+                              handleEdit(book); // Pass the book object instead of calling setShowUpdateModal
                             }}
                             title="Edit"
                           >
@@ -404,6 +389,16 @@ const handleBulkDelete = async () => {
           {showAddModal && (
             <AddBookModal
               onClose={() => setShowAddModal(false)}
+              refreshBooks={() => fetchBooks(0, true)}
+            />
+          )}
+          {showUpdateModal && bookToEdit && (
+            <UpdateBookModal
+              bookToEdit={bookToEdit}
+              onClose={() => {
+                setShowUpdateModal(false);
+                setBookToEdit(null);
+              }}
               refreshBooks={() => fetchBooks(0, true)}
             />
           )}

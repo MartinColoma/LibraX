@@ -25,6 +25,7 @@
   font-weight: 600;
   color: #fff;
 }
+
 .filter-container {
   display: flex;
   justify-content: space-between;
@@ -51,6 +52,7 @@
   border-radius: 5px;
   border: 1px solid #ccc;
 }
+
 .delete-btn {
   padding: 10px 20px;
   background-color: #b91c1c; /* Dark Red (Tailwind's red-700) */
@@ -67,8 +69,6 @@
   background-color: #991b1b; /* Even darker red on hover */
 }
 
-
-
 .add-btn {
   padding: 10px 20px;
   background: linear-gradient(90deg, #6d28d9, #9333ea);
@@ -84,7 +84,6 @@
   transform: scale(1.05);
   background: linear-gradient(90deg, #7e22ce, #a855f7);
 }
-
 
 /* Table Container */
 .table-container {
@@ -106,6 +105,7 @@
   text-align: left;
   border-bottom: 1px solid #2d2d3a;
   font-size: 0.85rem; /* slightly smaller text for a simpler look */
+  vertical-align: middle; /* KEY FIX: Center content vertically */
 }
 
 .book-table th {
@@ -133,7 +133,6 @@
   width: 32px; /* slightly smaller checkbox column */
 }
 
-
 .show-more-container {
   display: flex;
   justify-content: center;
@@ -159,9 +158,16 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+/* FIXED ACTION BUTTONS SECTION */
 .action-buttons {
   display: flex;
   gap: 6px;
+  align-items: center; /* Center buttons vertically within the flex container */
+  justify-content: center; /* Center buttons horizontally */
+  margin: 0; /* Remove any inherited margins */
+  padding: 0; /* Remove any inherited padding */
+  height: 100%; /* Take full height of the cell */
 }
 
 .action-btn {
@@ -174,6 +180,8 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease, color 0.2s ease;
+  margin: 0; /* Explicitly remove margins */
+  line-height: 1; /* Reset line height */
 }
 
 .action-btn:hover {

@@ -89,10 +89,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-
-
-
 // ======== POST Add Book ========
 router.post("/add_book", async (req, res) => {
   const {
@@ -272,7 +268,138 @@ router.post("/bulk-delete", async (req, res) => {
     res.status(500).json({ message: "Server error during bulk delete." });
   }
 });
+// Add this route to your books.js file
 
+// ======== GET Single Book with Details ========
+router.get("/:book_id", async (req, res) => {
+  const { book_id } = req.params;
+
+  try {
+    // Get book details with category info
+    const bookSql = `
+      SELECT 
+        b.book_id,
+        b.isbn,
+        b.title,
+        b.subtitle,
+        b.description,
+        b.publisher,
+        b.publication_year,
+        b.edition,
+        b.language,
+        b.category_id,
+        c.category_name,
+        c.category_type
+      FROM books b
+      LEFT JOIN categories c ON b.category_id = c.category_id
+      WHERE b.book_id = ?
+    `;
+    
+    const bookResult = await query(bookSql, [book_id]);
+    
+    if (bookResult.length === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Get authors for this book
+    const authorsSql = `
+      SELECT a.author_id, a.name
+      FROM authors a
+      INNER JOIN book_authors ba ON a.author_id = ba.author_id
+      WHERE ba.book_id = ?
+    `;
+    
+    const authorsResult = await query(authorsSql, [book_id]);
+    
+    // Get number of copies
+    const copiesSql = `
+      SELECT COUNT(*) as copy_count
+      FROM book_copies
+      WHERE book_id = ?
+    `;
+    
+    const copiesResult = await query(copiesSql, [book_id]);
+
+    const book = {
+      ...bookResult[0],
+      authors: authorsResult.map(author => author.name),
+      copy_count: copiesResult[0].copy_count
+    };
+
+    res.json(book);
+  } catch (error) {
+    console.error("❌ Error fetching book details:", error);
+    res.status(500).json({ error: "Failed to fetch book details", details: error.message });
+  }
+});
+
+// ======== PUT Update Book (Enhanced) ========
+router.put("/update_book/:book_id", async (req, res) => {
+  const { book_id } = req.params;
+  const {
+    isbn, title, subtitle, description, publisher,
+    publication_year, edition, language, category_id,
+    authors = []
+  } = req.body;
+
+  if (!isbn || !title) {
+    return res.status(400).json({ error: "ISBN and Title are required." });
+  }
+
+  try {
+    // Update book details
+    const result = await query(
+      `UPDATE books
+       SET isbn = ?, title = ?, subtitle = ?, description = ?, publisher = ?, 
+           publication_year = ?, edition = ?, category_id = ?, language = ?
+       WHERE book_id = ?`,
+      [
+        isbn,
+        title,
+        subtitle || null,
+        description || null,
+        publisher || null,
+        publication_year || null,
+        edition || null,
+        category_id || null,
+        language || "English",
+        book_id
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    // Update authors if provided
+    if (authors.length > 0) {
+      // Remove existing author associations
+      await query("DELETE FROM book_authors WHERE book_id = ?", [book_id]);
+
+      // Process and add new authors
+      const cleanedAuthors = authors.map((a) => a && a.trim()).filter(Boolean);
+      
+      for (const authorName of cleanedAuthors) {
+        const existing = await query("SELECT author_id FROM authors WHERE name = ?", [authorName]);
+        let authorId;
+        
+        if (existing.length === 0) {
+          const result = await query("INSERT INTO authors (name) VALUES (?)", [authorName]);
+          authorId = result.insertId;
+        } else {
+          authorId = existing[0].author_id;
+        }
+        
+        await query("INSERT INTO book_authors (book_id, author_id) VALUES (?, ?)", [book_id, authorId]);
+      }
+    }
+
+    res.json({ message: "✅ Book updated successfully!" });
+  } catch (error) {
+    console.error("❌ Error updating book:", error);
+    res.status(500).json({ error: "Failed to update book", details: error.message });
+  }
+});
 // ======== Test Route ========
 router.get("/test", (req, res) => {
   res.json({
