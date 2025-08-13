@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./UpdateBookModal.module.css";
 import { X, Plus } from "lucide-react";
@@ -45,58 +45,10 @@ interface Author {
   author_name: string;
 }
 
-interface NavProps {
-  step: number;
-  maxStep: number;
-  loading: boolean;
-  onBack: () => void;
-  onNext: () => void;
-  nextBtnRef: React.RefObject<HTMLButtonElement>;
-}
-
-const NavigationButtons: React.FC<NavProps> = ({
-  step,
-  maxStep,
-  loading,
-  onBack,
-  onNext,
-  nextBtnRef,
-}) => {
-  return (
-    <div className={styles.navButtons}>
-      {step > 1 && (
-        <button type="button" onClick={onBack} className={styles.backBtn}>
-          Back
-        </button>
-      )}
-      {step < maxStep ? (
-        <button
-          type="button"
-          onClick={onNext}
-          className={styles.nextBtn}
-          ref={nextBtnRef}
-        >
-          Next
-        </button>
-      ) : (
-        <button
-          type="submit"
-          className={styles.submitBtn}
-          disabled={loading}
-          ref={nextBtnRef}
-        >
-          {loading ? "Updating..." : "Update Book"}
-        </button>
-      )}
-    </div>
-  );
-};
-
 const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(true);
-  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const [formData, setFormData] = useState({
     isbn: "",
@@ -285,23 +237,24 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     }
   };
 
-  const handleNext = () => {
+  // 🎯 UNIFIED METHOD - handles Next, Submit, and Enter key
+  const handleProceed = async () => {
     if (!validateStep()) {
       alert("⚠️ Please fill in all required fields before continuing.");
       return;
     }
-    setStep((prev) => prev + 1);
-  };
 
-  const handleBack = () => setStep((prev) => prev - 1);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateStep(3)) {
-      alert("⚠️ Please fill in all required fields before submitting.");
+    // If not on final step, go to next step
+    if (step < 3) {
+      setStep(prev => prev + 1);
       return;
     }
 
+    // Final step - submit the form
+    await submitForm();
+  };
+
+  const submitForm = async () => {
     // Ensure category_id is set before submitting
     let finalFormData = { ...formData };
     if (!formData.category_id && categorySearch) {
@@ -344,11 +297,13 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     }
   };
 
-  // Pressing Enter triggers Next/Submit button
+  const handleBack = () => setStep(prev => prev - 1);
+
+  // 🎯 Enter key uses the same unified method
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === "Enter" && !showAddAuthor) {
       e.preventDefault();
-      nextBtnRef.current?.click();
+      handleProceed();
     }
   };
 
@@ -434,7 +389,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
           </div>
         )}
 
-        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+        <form onKeyDown={handleKeyDown}>
           {/* Step 1: Basic Info */}
           {step === 1 && (
             <>
@@ -604,14 +559,23 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
             </>
           )}
 
-          <NavigationButtons
-            step={step}
-            maxStep={3}
-            loading={loading}
-            onBack={handleBack}
-            onNext={handleNext}
-            nextBtnRef={nextBtnRef}
-          />
+          {/* 🎯 SIMPLE NAVIGATION - All buttons use the same method */}
+          <div className={styles.navButtons}>
+            {step > 1 && (
+              <button type="button" onClick={handleBack} className={styles.backBtn}>
+                Back
+              </button>
+            )}
+            
+            <button
+              type="button"
+              onClick={handleProceed} // 🎯 Same method for Next and Submit
+              className={step < 3 ? styles.nextBtn : styles.submitBtn}
+              disabled={loading}
+            >
+              {loading ? "Updating..." : step < 3 ? "Next" : "Update Book"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
