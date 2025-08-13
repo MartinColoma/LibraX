@@ -595,7 +595,7 @@ router.get("/:book_id/copies", async (req, res) => {
       error: 'Failed to get book copies' 
     });
   }
-});
+}); 
 // ======== DELETE Book ========
 router.delete("/delete_book/:book_id", async (req, res) => {
   const { book_id } = req.params;
