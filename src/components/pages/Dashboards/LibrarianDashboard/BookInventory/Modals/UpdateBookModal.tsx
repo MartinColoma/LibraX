@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./UpdateBookModal.module.css";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Minus } from "lucide-react";
 
 interface Book {
   book_id: number;
@@ -26,6 +26,9 @@ interface BookDetails {
   category_type?: string;
   authors: string[];
   copy_count: number;
+  available_copies: number;
+  borrowed_copies: number;
+  unavailable_copies: number;
 }
 
 interface Props {
@@ -45,10 +48,20 @@ interface Author {
   author_name: string;
 }
 
+interface CopyManagementResult {
+  success: boolean;
+  message: string;
+  book_id: string;
+  action: string;
+  quantity: number;
+  new_copy_count: number;
+}
+
 const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(true);
+  const [copyLoading, setCopyLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     isbn: "",
@@ -64,6 +77,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     authors: "",
   });
 
+  const [bookDetails, setBookDetails] = useState<BookDetails | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [authorsList, setAuthorsList] = useState<Author[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
@@ -76,6 +90,9 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
   const [newAuthorBio, setNewAuthorBio] = useState("");
   const [addingAuthor, setAddingAuthor] = useState(false);
 
+  // Copy Management State
+  const [copyQuantity, setCopyQuantity] = useState(1);
+
   // Load book details when component mounts
   useEffect(() => {
     const loadBookDetails = async () => {
@@ -86,6 +103,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
         );
         
         const bookDetails = response.data;
+        setBookDetails(bookDetails);
         
         setFormData({
           isbn: bookDetails.isbn || "",
@@ -158,6 +176,52 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     if (authorSearch.trim().length > 0) fetchAuthors();
     else setAuthorsList([]);
   }, [authorSearch]);
+
+  // Refresh book details after copy changes
+  const refreshBookDetails = async () => {
+    try {
+      const response = await axios.get<BookDetails>(
+        `http://localhost:5000/books/${bookToEdit.book_id}`
+      );
+      setBookDetails(response.data);
+    } catch (error) {
+      console.error("❌ Failed to refresh book details:", error);
+    }
+  };
+
+  // Copy Management Functions
+  const handleCopyManagement = async (action: 'increase' | 'decrease') => {
+    if (copyQuantity <= 0) {
+      alert("⚠️ Please enter a valid quantity.");
+      return;
+    }
+
+    setCopyLoading(true);
+    try {
+      const response = await axios.put<CopyManagementResult>(
+        `http://localhost:5000/books/${bookToEdit.book_id}/copies`,
+        {
+          action,
+          quantity: copyQuantity
+        }
+      );
+
+      if (response.data.success) {
+        alert(response.data.message);
+        await refreshBookDetails();
+        refreshBooks(); // Refresh the main books list
+        setCopyQuantity(1); // Reset quantity input
+      }
+    } catch (error: any) {
+      console.error(`❌ Error ${action}ing copies:`, error);
+      alert(
+        error.response?.data?.error ||
+        `Failed to ${action} copies. Check the console for details.`
+      );
+    } finally {
+      setCopyLoading(false);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -232,6 +296,8 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
         return formData.category_type && categoryValid;
       case 3:
         return formData.authors.trim();
+      case 4:
+        return true; // Copy management step is always valid
       default:
         return true;
     }
@@ -245,7 +311,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     }
 
     // If not on final step, go to next step
-    if (step < 3) {
+    if (step < 4) {
       setStep(prev => prev + 1);
       return;
     }
@@ -301,7 +367,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
 
   // 🎯 Enter key uses the same unified method
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === "Enter" && !showAddAuthor) {
+    if (e.key === "Enter" && !showAddAuthor && step < 4) {
       e.preventDefault();
       handleProceed();
     }
@@ -351,6 +417,17 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
           <div className={`${styles.step} ${step >= 3 ? styles.active : ""}`}>
             3
           </div>
+          <div className={`${styles.step} ${step >= 4 ? styles.active : ""}`}>
+            4
+          </div>
+        </div>
+
+        {/* Step Labels */}
+        <div className={styles.stepLabels}>
+          <span className={step === 1 ? styles.activeLabel : ""}>Basic Info</span>
+          <span className={step === 2 ? styles.activeLabel : ""}>Category</span>
+          <span className={step === 3 ? styles.activeLabel : ""}>Authors</span>
+          <span className={step === 4 ? styles.activeLabel : ""}>Copies</span>
         </div>
 
         {/* Add Author Modal */}
@@ -559,7 +636,84 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
             </>
           )}
 
-          {/* 🎯 SIMPLE NAVIGATION - All buttons use the same method */}
+          {/* Step 4: Copy Management */}
+          {step === 4 && bookDetails && (
+            <>
+              <div className={styles.copyManagementSection}>
+                <h3>📚 Copy Management</h3>
+                
+                {/* Copy Status Display */}
+                <div className={styles.copyStatusGrid}>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Total Copies</h4>
+                    <span className={styles.copyCount}>{bookDetails.copy_count}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Available</h4>
+                    <span className={styles.copyCount}>{bookDetails.available_copies}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Borrowed</h4>
+                    <span className={styles.copyCount}>{bookDetails.borrowed_copies}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Unavailable</h4>
+                    <span className={styles.copyCount}>{bookDetails.unavailable_copies}</span>
+                  </div>
+                </div>
+
+                {/* Copy Management Controls */}
+                <div className={styles.copyControls}>
+                  <label>Quantity to Add/Remove:</label>
+                  <div className={styles.quantityControls}>
+                    <input
+                      type="number"
+                      min="1"
+                      value={copyQuantity}
+                      onChange={(e) => setCopyQuantity(parseInt(e.target.value) || 1)}
+                      className={styles.quantityInput}
+                    />
+                    
+                    <div className={styles.copyActionButtons}>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyManagement('increase')}
+                        disabled={copyLoading}
+                        className={styles.increaseBtn}
+                        title="Add Copies"
+                      >
+                        <Plus size={16} />
+                        Add Copies
+                      </button>
+                      
+                      <button
+                        type="button"
+                        onClick={() => handleCopyManagement('decrease')}
+                        disabled={copyLoading || bookDetails.available_copies === 0}
+                        className={styles.decreaseBtn}
+                        title="Remove Available Copies"
+                      >
+                        <Minus size={16} />
+                        Remove Copies
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {copyLoading && (
+                    <p className={styles.copyLoadingText}>Processing...</p>
+                  )}
+                  
+                  {bookDetails.available_copies === 0 && (
+                    <p className={styles.warningText}>
+                      ⚠️ No available copies to remove. Only available copies can be removed.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* 🎯 NAVIGATION BUTTONS */}
           <div className={styles.navButtons}>
             {step > 1 && (
               <button type="button" onClick={handleBack} className={styles.backBtn}>
@@ -569,11 +723,11 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
             
             <button
               type="button"
-              onClick={handleProceed} // 🎯 Same method for Next and Submit
-              className={step < 3 ? styles.nextBtn : styles.submitBtn}
+              onClick={handleProceed}
+              className={step < 4 ? styles.nextBtn : styles.submitBtn}
               disabled={loading}
             >
-              {loading ? "Updating..." : step < 3 ? "Next" : "Update Book"}
+              {loading ? "Updating..." : step < 4 ? "Next" : "Update Book"}
             </button>
           </div>
         </form>
