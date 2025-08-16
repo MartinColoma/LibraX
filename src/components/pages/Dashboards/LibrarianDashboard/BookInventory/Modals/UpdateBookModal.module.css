@@ -534,6 +534,58 @@
   transform: none;
 }
 
+.pendingChanges {
+  background: #fff3cd;
+  border: 1px solid #ffeb3b;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.pendingChanges h4 {
+  margin: 0 0 8px 0;
+  color: #b8860b;
+  font-size: 16px;
+}
+
+.pendingChanges p {
+  margin: 4px 0;
+  color: #856404;
+}
+
+.pendingChanges strong {
+  color: #6f5500;
+  font-weight: 600;
+}
+
+.clearChangesBtn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.clearChangesBtn:hover {
+  background: #c82333;
+}
+
+.copyLoadingText {
+  color: #6c757d;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.warningText {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 8px;
+  font-weight: 500;
+}
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .modalContent {

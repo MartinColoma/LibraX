@@ -61,7 +61,6 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(true);
-  const [copyLoading, setCopyLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     isbn: "",
@@ -90,8 +89,15 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
   const [newAuthorBio, setNewAuthorBio] = useState("");
   const [addingAuthor, setAddingAuthor] = useState(false);
 
-  // Copy Management State
+  // Copy Management State - CHANGED: Now tracks pending changes instead of applying immediately
   const [copyQuantity, setCopyQuantity] = useState(1);
+  const [copyChanges, setCopyChanges] = useState<{
+    action: 'increase' | 'decrease' | null;
+    quantity: number;
+  }>({
+    action: null,
+    quantity: 0
+  });
 
   // Load book details when component mounts
   useEffect(() => {
@@ -177,50 +183,21 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     else setAuthorsList([]);
   }, [authorSearch]);
 
-  // Refresh book details after copy changes
-  const refreshBookDetails = async () => {
-    try {
-      const response = await axios.get<BookDetails>(
-        `http://localhost:5000/books/${bookToEdit.book_id}`
-      );
-      setBookDetails(response.data);
-    } catch (error) {
-      console.error("❌ Failed to refresh book details:", error);
-    }
-  };
-
-  // Copy Management Functions
-  const handleCopyManagement = async (action: 'increase' | 'decrease') => {
+  // CHANGED: Copy Management Functions - Now just track pending changes
+  const handleCopyChange = (action: 'increase' | 'decrease') => {
     if (copyQuantity <= 0) {
       alert("⚠️ Please enter a valid quantity.");
       return;
     }
 
-    setCopyLoading(true);
-    try {
-      const response = await axios.put<CopyManagementResult>(
-        `http://localhost:5000/books/${bookToEdit.book_id}/copies`,
-        {
-          action,
-          quantity: copyQuantity
-        }
-      );
-
-      if (response.data.success) {
-        alert(response.data.message);
-        await refreshBookDetails();
-        refreshBooks(); // Refresh the main books list
-        setCopyQuantity(1); // Reset quantity input
-      }
-    } catch (error: any) {
-      console.error(`❌ Error ${action}ing copies:`, error);
-      alert(
-        error.response?.data?.error ||
-        `Failed to ${action} copies. Check the console for details.`
-      );
-    } finally {
-      setCopyLoading(false);
+    // Check if trying to decrease more than available
+    if (action === 'decrease' && bookDetails && copyQuantity > bookDetails.available_copies) {
+      alert(`⚠️ Cannot remove ${copyQuantity} copies. Only ${bookDetails.available_copies} available copies.`);
+      return;
     }
+
+    setCopyChanges({ action, quantity: copyQuantity });
+    alert(`📝 Copy change recorded: ${action} ${copyQuantity} cop${copyQuantity === 1 ? 'y' : 'ies'}. Click "Update Book" to apply all changes.`);
   };
 
   const handleChange = (
@@ -320,6 +297,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
     await submitForm();
   };
 
+  // CHANGED: submitForm now handles both book updates AND copy management
   const submitForm = async () => {
     // Ensure category_id is set before submitting
     let finalFormData = { ...formData };
@@ -337,7 +315,8 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
 
     setLoading(true);
     try {
-      const response = await axios.put(
+      // 1️⃣ First, update the book information
+      const bookUpdateResponse = await axios.put(
         `http://localhost:5000/books/update_book/${bookToEdit.book_id}`,
         {
           ...finalFormData,
@@ -345,18 +324,45 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
         }
       );
 
-      console.log("Server response:", response.data);
+      console.log("Book update response:", bookUpdateResponse.data);
 
-      if (response.status === 200) {
-        alert("✅ Book updated successfully!");
-        refreshBooks();
-        onClose();
+      if (bookUpdateResponse.status !== 200) {
+        throw new Error("Failed to update book information");
       }
+
+      // 2️⃣ Then, handle copy management if there are pending changes
+      if (copyChanges.action && copyChanges.quantity > 0) {
+        const copyResponse = await axios.put<CopyManagementResult>(
+          `http://localhost:5000/books/${bookToEdit.book_id}/copies`,
+          {
+            action: copyChanges.action,
+            quantity: copyChanges.quantity
+          }
+        );
+
+        console.log("Copy management response:", copyResponse.data);
+
+        if (!copyResponse.data.success) {
+          throw new Error(copyResponse.data.message || "Failed to update copies");
+        }
+      }
+
+      // 3️⃣ Success - show appropriate message
+      let successMessage = "✅ Book information updated successfully!";
+      if (copyChanges.action && copyChanges.quantity > 0) {
+        successMessage += ` Also ${copyChanges.action}d ${copyChanges.quantity} cop${copyChanges.quantity === 1 ? 'y' : 'ies'}.`;
+      }
+
+      alert(successMessage);
+      refreshBooks();
+      onClose();
+
     } catch (error: any) {
       console.error("❌ Error updating book:", error);
       alert(
         error.response?.data?.error ||
-          "Failed to update book. Check the console for details."
+        error.message ||
+        "Failed to update book. Check the console for details."
       );
     } finally {
       setLoading(false);
@@ -385,6 +391,27 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
       });
     } else {
       setFormData({ ...formData, category_id: "" });
+    }
+  };
+
+  // CHANGED: Calculate predicted copy count for display
+  const getPredictedCopyCount = () => {
+    if (!bookDetails || !copyChanges.action) return bookDetails?.copy_count || 0;
+    
+    if (copyChanges.action === 'increase') {
+      return bookDetails.copy_count + copyChanges.quantity;
+    } else {
+      return bookDetails.copy_count - copyChanges.quantity;
+    }
+  };
+
+  const getPredictedAvailableCopies = () => {
+    if (!bookDetails || !copyChanges.action) return bookDetails?.available_copies || 0;
+    
+    if (copyChanges.action === 'increase') {
+      return bookDetails.available_copies + copyChanges.quantity;
+    } else {
+      return bookDetails.available_copies - copyChanges.quantity;
     }
   };
 
@@ -636,7 +663,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
             </>
           )}
 
-          {/* Step 4: Copy Management */}
+          {/* CHANGED: Step 4: Copy Management - Now shows pending changes */}
           {step === 4 && bookDetails && (
             <>
               <div className={styles.copyManagementSection}>
@@ -645,7 +672,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
                 {/* Copy Status Display */}
                 <div className={styles.copyStatusGrid}>
                   <div className={styles.copyStatusCard}>
-                    <h4>Total Copies</h4>
+                    <h4>Current Total</h4>
                     <span className={styles.copyCount}>{bookDetails.copy_count}</span>
                   </div>
                   <div className={styles.copyStatusCard}>
@@ -662,6 +689,29 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
                   </div>
                 </div>
 
+                {/* CHANGED: Show pending changes */}
+                {copyChanges.action && (
+                  <div className={styles.pendingChanges}>
+                    <h4>📋 Pending Changes</h4>
+                    <p>
+                      Will <strong>{copyChanges.action}</strong> {copyChanges.quantity} cop{copyChanges.quantity === 1 ? 'y' : 'ies'}
+                    </p>
+                    <p>
+                      New Total: <strong>{bookDetails.copy_count}</strong> → <strong>{getPredictedCopyCount()}</strong>
+                    </p>
+                    <p>
+                      New Available: <strong>{bookDetails.available_copies}</strong> → <strong>{getPredictedAvailableCopies()}</strong>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setCopyChanges({ action: null, quantity: 0 })}
+                      className={styles.clearChangesBtn}
+                    >
+                      Clear Changes
+                    </button>
+                  </div>
+                )}
+
                 {/* Copy Management Controls */}
                 <div className={styles.copyControls}>
                   <label>Quantity to Add/Remove:</label>
@@ -677,8 +727,7 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
                     <div className={styles.copyActionButtons}>
                       <button
                         type="button"
-                        onClick={() => handleCopyManagement('increase')}
-                        disabled={copyLoading}
+                        onClick={() => handleCopyChange('increase')}
                         className={styles.increaseBtn}
                         title="Add Copies"
                       >
@@ -688,8 +737,8 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
                       
                       <button
                         type="button"
-                        onClick={() => handleCopyManagement('decrease')}
-                        disabled={copyLoading || bookDetails.available_copies === 0}
+                        onClick={() => handleCopyChange('decrease')}
+                        disabled={bookDetails.available_copies === 0}
                         className={styles.decreaseBtn}
                         title="Remove Available Copies"
                       >
@@ -698,10 +747,6 @@ const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks })
                       </button>
                     </div>
                   </div>
-                  
-                  {copyLoading && (
-                    <p className={styles.copyLoadingText}>Processing...</p>
-                  )}
                   
                   {bookDetails.available_copies === 0 && (
                     <p className={styles.warningText}>

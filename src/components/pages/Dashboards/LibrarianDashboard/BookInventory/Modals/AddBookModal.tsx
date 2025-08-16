@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./AddBookModal.module.css";
 import { X, Plus } from "lucide-react";
@@ -24,8 +24,7 @@ interface NavProps {
   maxStep: number;
   loading: boolean;
   onBack: () => void;
-  onNext: () => void;
-  nextBtnRef: React.RefObject<HTMLButtonElement>;
+  onProceed: () => void; // Changed from onNext to onProceed
 }
 
 const NavigationButtons: React.FC<NavProps> = ({
@@ -33,8 +32,7 @@ const NavigationButtons: React.FC<NavProps> = ({
   maxStep,
   loading,
   onBack,
-  onNext,
-  nextBtnRef,
+  onProceed, // Updated prop name
 }) => {
   return (
     <div className={styles.navButtons}>
@@ -43,25 +41,14 @@ const NavigationButtons: React.FC<NavProps> = ({
           Back
         </button>
       )}
-      {step < maxStep ? (
-        <button
-          type="button"
-          onClick={onNext}
-          className={styles.nextBtn}
-          ref={nextBtnRef}
-        >
-          Next
-        </button>
-      ) : (
-        <button
-          type="submit"
-          className={styles.submitBtn}
-          disabled={loading}
-          ref={nextBtnRef}
-        >
-          {loading ? "Adding..." : "Add Book"}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onProceed} // Uses unified handler
+        className={step < maxStep ? styles.nextBtn : styles.submitBtn}
+        disabled={loading}
+      >
+        {loading ? "Adding..." : step < maxStep ? "Next" : "Add Book"}
+      </button>
     </div>
   );
 };
@@ -69,7 +56,6 @@ const NavigationButtons: React.FC<NavProps> = ({
 const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const [formData, setFormData] = useState({
     isbn: "",
@@ -223,38 +209,36 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     }
   };
 
-  const handleNext = () => {
+  // 🎯 UNIFIED METHOD - handles Next, Submit, and Enter key (same as UpdateBookModal)
+  const handleProceed = async () => {
     if (!validateStep()) {
       alert("⚠️ Please fill in all required fields before continuing.");
       return;
     }
-    setStep((prev) => prev + 1);
-  };
 
-  const handleBack = () => setStep((prev) => prev - 1);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateStep(3)) {
-      alert("⚠️ Please fill in all required fields before submitting.");
+    // If not on final step, go to next step
+    if (step < 3) {
+      setStep(prev => prev + 1);
       return;
     }
 
+    // Final step - submit the form
+    await submitForm();
+  };
+
+  const submitForm = async () => {
     // ✅ FIXED: Ensure category_id is set before submitting
+    let finalFormData = { ...formData };
     if (!formData.category_id && categorySearch) {
       const match = filteredCategories.find(
         (cat) => cat.category_name.toLowerCase() === categorySearch.toLowerCase()
       );
       if (match) {
-        setFormData(prev => ({ ...prev, category_id: match.category_id.toString() }));
-        // Use the updated formData in the submission
-        var finalFormData = { ...formData, category_id: match.category_id.toString() };
+        finalFormData.category_id = match.category_id.toString();
       } else {
         alert("⚠️ Please select a valid category from the dropdown.");
         return;
       }
-    } else {
-      var finalFormData = formData;
     }
 
     setLoading(true);
@@ -306,11 +290,13 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     }
   };
 
-  // ✅ Pressing Enter now triggers Next/Submit button
+  const handleBack = () => setStep((prev) => prev - 1);
+
+  // 🎯 Enter key uses the same unified method (same as UpdateBookModal)
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === "Enter" && !showAddAuthor) {
       e.preventDefault();
-      nextBtnRef.current?.click();
+      handleProceed(); // Uses the same unified method
     }
   };
 
@@ -386,7 +372,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+        <form onKeyDown={handleKeyDown}>
           {/* Step 1: Basic Info */}
           {step === 1 && (
             <>
@@ -397,6 +383,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="isbn"
                 value={formData.isbn}
                 onChange={handleChange}
+                placeholder="Enter ISBN here"
                 required
               />
 
@@ -407,6 +394,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
+                placeholder="Enter Book Title"
                 required
               />
 
@@ -415,6 +403,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="subtitle"
                 value={formData.subtitle}
                 onChange={handleChange}
+                placeholder="Enter Book Subtitle"
               />
 
               <label>Description</label>
@@ -422,6 +411,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                placeholder="Enter Book Description"
               />
             </>
           )}
@@ -434,6 +424,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="publisher"
                 value={formData.publisher}
                 onChange={handleChange}
+                placeholder="Enter Publishing Company"
               />
 
               <label>Publication Year</label>
@@ -441,6 +432,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="publication_year"
                 value={formData.publication_year}
                 onChange={handleChange}
+                placeholder="Enter Year Published"
               />
 
               <label>Edition</label>
@@ -448,6 +440,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="edition"
                 value={formData.edition}
                 onChange={handleChange}
+                placeholder="Enter Book Edition"
               />
 
               <label>
@@ -492,6 +485,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 }}
                 onBlur={handleCategoryBlur}
                 list="categories"
+                placeholder="Select Book Genre"
               />
               <datalist id="categories">
                 {filteredCategories
@@ -513,6 +507,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="language"
                 value={formData.language}
                 onChange={handleChange}
+                placeholder="Enter Book Language"
               />
             </>
           )}
@@ -573,8 +568,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
             maxStep={3}
             loading={loading}
             onBack={handleBack}
-            onNext={handleNext}
-            nextBtnRef={nextBtnRef}
+            onProceed={handleProceed} // Uses unified handler
           />
         </form>
       </div>
