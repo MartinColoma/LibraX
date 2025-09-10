@@ -11,7 +11,6 @@ import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accoun
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
-import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
 
 // Modals
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
@@ -58,8 +57,6 @@ const AppRoutes: React.FC = () => {
         <Route path="/librarian/dashboard/payments" element={<LibDash_Pay />} />
         <Route path="/librarian/dashboard/reservation" element={<LibDash_Reserve />} />
 
-        {/* admin dashboard routes */}
-        <Route path="/admin/dashboard/home" element={<ADash_Home />} />
       </Routes>
 
       {/* Modal Route Overlay */}

@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import { Eye, EyeOff, Loader2, X } from "lucide-react";
 import styles from "./LoginModal.module.css";
+import libraryImage from "../../../images/library_cover.png";
 
 interface Props {
   onClose: () => void;
@@ -141,68 +142,88 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
         <button className={styles.modalCloseBtn} onClick={onClose}>
           <X size={18} />
         </button>
-        <h2 className={styles.modalTitle}>Staff Login</h2>
-
-        <form onSubmit={handleSubmit} className={styles.modalLoginForm}>
-          <div className={styles.formGroup}>
-            <label>Email:</label>
-            {errors.email && (
-              <div className={styles.formError}>{errors.email}</div>
-            )}
-            <input
-              ref={emailInputRef}
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleInputChange}
-              onBlur={handleEmailBlur}
-              disabled={isLoading}
+        
+        <div className={styles.modalBody}>
+          {/* Left side - Library Image */}
+          <div className={styles.imageSection}>
+            <img 
+              src={libraryImage} 
+              alt="Library" 
+              className={styles.libraryImage}
             />
-            {checkingEmail && (
-              <small style={{ color: "#666" }}>Checking email existence...</small>
-            )}
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Password:</label>
-            {errors.password && (
-              <div className={styles.formError}>{errors.password}</div>
-            )}
-            <div className={styles.passwordInputContainer}>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleInputChange}
-                disabled={isLoading}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={styles.eyeBtn}
-                disabled={isLoading}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
+            <div className={styles.imageOverlay}>
+              <h3 className={styles.welcomeText}>Welcome to</h3>
+              <h2 className={styles.libraryTitle}>LibraX</h2>
+              <p className={styles.librarySubtitle}>Portal Access</p>
             </div>
           </div>
 
-          <button
-            type="submit"
-            className={styles.btnPrimary}
-            disabled={isLoading || checkingEmail || isFormInvalid}
-          >
-            {isLoading ? (
-              <span className={styles.loadingSpinner}>
-                <Loader2 size={16} className={styles.animateSpin} /> Signing In...
-              </span>
-            ) : (
-              "Login"
-            )}
-          </button>
-        </form>
+          {/* Right side - Login Form */}
+          <div className={styles.formSection}>
+            <h2 className={styles.modalTitle}>Login</h2>
+
+            <form onSubmit={handleSubmit} className={styles.modalLoginForm}>
+              <div className={styles.formGroup}>
+                <label>Email:</label>
+                {errors.email && (
+                  <div className={styles.formError}>{errors.email}</div>
+                )}
+                <input
+                  ref={emailInputRef}
+                  type="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={handleEmailBlur}
+                  disabled={isLoading}
+                />
+                {checkingEmail && (
+                  <small style={{ color: "#666" }}>Checking email existence...</small>
+                )}
+              </div>
+
+              <div className={styles.formGroup}>
+                <label>Password:</label>
+                {errors.password && (
+                  <div className={styles.formError}>{errors.password}</div>
+                )}
+                <div className={styles.passwordInputContainer}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    placeholder="Enter your password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className={styles.eyeBtn}
+                    disabled={isLoading}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className={styles.btnPrimary}
+                disabled={isLoading || checkingEmail || isFormInvalid}
+              >
+                {isLoading ? (
+                  <span className={styles.loadingSpinner}>
+                    <Loader2 size={16} className={styles.animateSpin} /> Signing In...
+                  </span>
+                ) : (
+                  "Login"
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>,
     document.body

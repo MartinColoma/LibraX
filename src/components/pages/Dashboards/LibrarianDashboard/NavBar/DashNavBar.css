@@ -1,3 +1,18 @@
+/* ===========================
+   Sidebar - MUJI Inspired Light Mode
+   =========================== */
+
+/* MUJI Color Palette */
+:root {
+  --dark-brown: #432818;   /* Strong dark accent for text/icons */
+  --warm-beige: #bb9457;   /* Warm beige accent */
+  --falu-red: #6f1d1b;     /* Rich red accent */
+  --warm-brown: #99582a;   /* Warm brown hover/active */
+  --light-cream: #fff8f0;  /* Primary light background */
+  --light-beige: #e5dcc3;  /* Subtle hover/borders */
+}
+
+/* Base Sidebar */
 .sidebar {
   width: 250px;
   position: fixed;
@@ -7,17 +22,21 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #0a0a0f;
+  background-color: var(--light-cream);
+  color: var(--dark-brown);
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
   overflow: visible;
   z-index: 150;
   transition: width 0.3s ease;
+  padding: 1.5rem 1rem;
+  border-right: 1px solid var(--light-beige);
 }
 
 .sidebar.collapsed {
   width: 85px;
 }
 
-/* Hide elements when collapsed */
+/* Hide text when collapsed */
 .sidebar.collapsed .logo-text,
 .sidebar.collapsed .sidebar-text,
 .sidebar.collapsed .staff-name,
@@ -27,34 +46,37 @@
 
 /* Sidebar Header */
 .sidebar-header {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   padding: 0.25rem;
+  margin-bottom: 2rem;
+  position: relative;
   flex-shrink: 0;
 }
 
 .logo {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--falu-red);
   display: flex;
   align-items: center;
-  font-weight: bold;
-  color: white;
 }
 
 .logo-text {
-  margin-left: 5px;
+  margin-left: 8px;
+  color: var(--dark-brown);
 }
 
-/* Floating Collapse Button - New Style */
+/* Floating Collapse Button */
 .collapse-btn.floating {
-  color: #0a0a0f;               /* Icon color */
-  background-color: #ffffff;    /* White circular button */
-  border: 2px solid #0a0a0f;    /* Dark border for visibility */
+  color: var(--light-cream);
+  background-color: var(--falu-red);
+  border: 2px solid var(--warm-beige);
   border-radius: 50%;
   position: absolute;
   top: 55%;
-  right: -30px;                 /* Floats slightly outside sidebar */
+  right: -30px;
   transform: translateY(-50%);
   height: 30px;
   width: 30px;
@@ -63,13 +85,13 @@
   align-items: center;
   justify-content: center;
   transition: 0.25s ease-in-out;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .collapse-btn.floating:hover {
-  background-color: #3b0764;    /* Purple hover */
-  color: #ffffff;               /* White icon */
-  border-color: #3b0764;
+  background-color: var(--warm-brown);
+  color: var(--light-cream);
+  border-color: var(--falu-red);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -78,6 +100,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: 0.75rem;
   margin-top: 1rem;
 }
 
@@ -86,17 +109,20 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: white;
   text-decoration: none;
-  transition: background 0.2s;
+  color: var(--dark-brown);
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
 }
 
 .sidebar-link:hover {
-  background-color: #1a1a1a;
+  background-color: var(--light-beige);
+  color: var(--falu-red);
 }
 
 .sidebar-link.active {
-  background-color: #3b0764;
+  background-color: var(--warm-beige);
+  color: var(--light-cream);
 }
 
 .sidebar-icon {
@@ -106,7 +132,7 @@
   min-width: 20px;
 }
 
-/* Collapsed nav icon alignment fix */
+/* Collapsed nav fix */
 .sidebar.collapsed .sidebar-link {
   justify-content: center;
   padding: 12px 0;
@@ -119,7 +145,7 @@
 
 /* Sidebar Footer */
 .sidebar-footer {
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--light-beige);
   padding-top: 1rem;
   position: relative;
   overflow: visible;
@@ -131,7 +157,7 @@
   align-items: center;
 }
 
-/* Collapsed footer alignment fix */
+/* Collapsed footer fix */
 .sidebar.collapsed .user-info {
   flex-direction: column;
   align-items: center;
@@ -143,15 +169,27 @@
   flex-direction: column;
 }
 
+.username.clickable {
+  cursor: pointer;
+  position: relative;
+}
+
 .staff-name {
   font-weight: bold;
   margin-top: 2px;
+  color: var(--falu-red);
+}
+
+.user-info small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--warm-brown);
 }
 
 .menu-toggle-btn {
   background: none;
   border: none;
-  color: white;
+  color: var(--dark-brown);
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
@@ -159,10 +197,10 @@
 }
 
 .menu-toggle-btn:hover {
-  background-color: #333;
+  background-color: var(--light-beige);
 }
 
-/* Collapsed ellipsis button alignment fix */
+/* Collapsed ellipsis button fix */
 .sidebar.collapsed .menu-toggle-btn {
   padding: 0;
   width: 100%;
@@ -171,14 +209,15 @@
   align-items: center;
 }
 
-/* Dropdown */
+/* Dropdown - Fixed positioning and styling */
 .user-dropdown {
   position: absolute;
   bottom: 70px;
   right: -10px;
-  background-color: #2c2c2c;
+  background-color: var(--light-cream);
+  border: 1px solid var(--light-beige);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   padding: 0.5rem 0;
   z-index: 200;
   min-width: 180px;
@@ -186,26 +225,50 @@
   flex-direction: column;
 }
 
+/* Collapsed dropdown positioning fix */
+.sidebar.collapsed .user-dropdown {
+  right: -150px; /* Position dropdown to the right when collapsed */
+  bottom: 20px;
+}
+
+.dropdown-user {
+  padding: 10px 15px;
+  font-weight: bold;
+  color: var(--dark-brown);
+  border-bottom: 1px solid var(--light-beige);
+  font-size: 14px;
+}
+
 .dropdown-item {
   padding: 10px 15px;
-  color: #fff;
+  color: var(--dark-brown);
   text-align: left;
   background: none;
   border: none;
   width: 100%;
   font-size: 14px;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
 
 .dropdown-item:hover {
-  background-color: #3a3a3a;
+  background-color: var(--warm-beige);
+  color: var(--light-cream);
 }
 
-/* Collapsed dropdown user name styling */
-.dropdown-user {
-  padding: 10px 15px;
-  font-weight: bold;
-  color: #fff;
-  border-bottom: 1px solid #444;
-  font-size: 14px;
+/* Logout button */
+.logout-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--warm-brown);
+  color: var(--light-cream);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  width: 100%;
+  transition: 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: var(--falu-red);
 }
