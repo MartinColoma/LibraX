@@ -11,7 +11,7 @@ import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accoun
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
-
+import Flask_Server from './components/pages/test'
 // Modals
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
@@ -49,6 +49,7 @@ const AppRoutes: React.FC = () => {
         <Route path='*' element={<PageNotFound />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/db" element={<DbTest />} />
+        <Route path="/test" element={<Flask_Server />} />
 
         {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
