@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
       icon: <LayoutDashboard size={18} />,
     },
     {
-      name: "Accounts",
+      name: "Manage Users",
       path: "/librarian/dashboard/accounts",
       icon: <Users size={18} />,
     },

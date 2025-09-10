@@ -1,10 +1,10 @@
-/* UpdateBookModal.module.css - Dark Theme */
+/* UpdateBookModal.module.css - Muji Light Theme */
 
 /* ===== Overlay & Modal ===== */
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,8 +13,8 @@
 }
 
 .modalContent {
-  background: #1a1a1a;
-  color: #ffffff;
+  background: #fefcf8; /* soft cream white */
+  color: #432818; /* deep brown text */
   padding: 40px 50px;
   border-radius: 20px;
   width: 90%;
@@ -22,8 +22,8 @@
   max-height: 90vh;
   overflow-y: auto;
   scrollbar-width: none;
-  border: 2px solid #9333ea;
-  box-shadow: 0 0 25px rgba(147, 51, 234, 0.2);
+  border: 2px solid #bb9457; /* warm beige border */
+  box-shadow: 0 0 25px rgba(153, 88, 42, 0.15);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
 }
@@ -48,7 +48,7 @@
   top: 20px;
   right: 20px;
   background: none;
-  color: #888;
+  color: #6b7280;
   border: none;
   font-size: 22px;
   cursor: pointer;
@@ -61,7 +61,7 @@
 }
 
 .modalCloseBtn:hover {
-  color: #9333ea;
+  color: #99582a;
 }
 
 .modalContent h2 {
@@ -72,7 +72,7 @@
   letter-spacing: 1px;
   margin: 0 0 20px 0;
   padding-right: 2rem;
-  color: #ffffff;
+  color: #432818;
 }
 
 /* ===== Step Indicator ===== */
@@ -87,21 +87,21 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  border: 2px solid #555;
+  border: 2px solid #d6ccc2;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #888;
+  color: #6b7280;
   transition: all 0.3s ease;
   position: relative;
 }
 
 .step.active {
-  border-color: #9333ea;
+  border-color: #99582a;
   color: #fff;
-  background: #9333ea;
-  box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  background: #99582a;
+  box-shadow: 0 0 10px rgba(153, 88, 42, 0.3);
 }
 
 .step:not(:last-child)::after {
@@ -110,13 +110,13 @@
   right: -20px;
   width: 20px;
   height: 2px;
-  background-color: #555;
+  background-color: #d6ccc2;
   top: 50%;
   transform: translateY(-50%);
 }
 
 .step.active:not(:last-child)::after {
-  background-color: #9333ea;
+  background-color: #99582a;
 }
 
 /* Step Labels */
@@ -125,11 +125,11 @@
   justify-content: space-between;
   margin-bottom: 2rem;
   font-size: 0.9rem;
-  color: #888;
+  color: #6b7280;
 }
 
 .activeLabel {
-  color: #9333ea !important;
+  color: #99582a !important;
   font-weight: 600;
 }
 
@@ -138,20 +138,20 @@
   display: block;
   margin: 1rem 0 0.5rem 0;
   font-weight: 600;
-  color: #ffffff;
+  color: #432818;
 }
 
 .required {
-  color: #ef4444;
+  color: #b91c1c;
   font-weight: bold;
 }
 
 .modalContent input,
 .modalContent select,
 .modalContent textarea {
-  background-color: #000000;
-  color: #ffffff;
-  border: 2px solid #333;
+  background-color: #fffdf9;
+  color: #432818;
+  border: 2px solid #d6ccc2;
   border-radius: 1.5rem;
   padding: 12px 16px;
   font-size: 14px;
@@ -164,13 +164,13 @@
 .modalContent select:focus,
 .modalContent textarea:focus {
   outline: none;
-  border-color: #9333ea;
-  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  border-color: #99582a;
+  box-shadow: 0 0 0 3px rgba(153, 88, 42, 0.15);
 }
 
 .modalContent input::placeholder,
 .modalContent textarea::placeholder {
-  color: #888;
+  color: #9ca3af;
 }
 
 .modalContent textarea {
@@ -187,7 +187,7 @@
 }
 
 .addAuthorBtn {
-  background: #10b981;
+  background: #6f1d1b;
   color: white;
   border: none;
   border-radius: 50%;
@@ -203,7 +203,7 @@
 }
 
 .addAuthorBtn:hover {
-  background: #059669;
+  background: #432818;
   transform: scale(1.1);
 }
 
@@ -218,19 +218,19 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #2d2d2d;
-  border: 2px solid #10b981;
+  background: #fffdf9;
+  border: 2px solid #bb9457;
   border-radius: 15px;
   padding: 25px;
   min-width: 400px;
   max-width: 90%;
   z-index: 1001;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 10px 30px rgba(153, 88, 42, 0.2);
   animation: fadeIn 0.3s ease-in-out;
 }
 
 .addAuthorModal h3 {
-  color: #10b981;
+  color: #6f1d1b;
   font-size: 18px;
   margin: 0 0 1rem 0;
   text-align: center;
@@ -240,9 +240,9 @@
 .addAuthorModal textarea {
   width: 100%;
   margin-bottom: 15px;
-  background: #000;
-  color: white;
-  border: 2px solid #555;
+  background: #fffdf9;
+  color: #432818;
+  border: 2px solid #d6ccc2;
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 14px;
@@ -251,9 +251,9 @@
 
 .addAuthorModal input:focus,
 .addAuthorModal textarea:focus {
-  border-color: #10b981;
+  border-color: #6f1d1b;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 3px rgba(111, 29, 27, 0.15);
 }
 
 .addAuthorButtons {
@@ -264,8 +264,8 @@
 
 .cancelBtn {
   padding: 8px 16px;
-  background: #6b7280;
-  color: white;
+  background: #d6ccc2;
+  color: #432818;
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -274,12 +274,13 @@
 }
 
 .cancelBtn:hover {
-  background: #4b5563;
+  background: #bb9457;
+  color: white;
 }
 
 .addBtn {
   padding: 8px 16px;
-  background: #10b981;
+  background: #6f1d1b;
   color: white;
   border: none;
   border-radius: 8px;
@@ -289,26 +290,26 @@
 }
 
 .addBtn:hover:not(:disabled) {
-  background: #059669;
+  background: #432818;
 }
 
 .addBtn:disabled {
-  background: #6b7280;
+  background: #d6ccc2;
   cursor: not-allowed;
 }
 
 /* ===== Copy Management Section ===== */
 .copyManagementSection {
-  background-color: #2d2d2d;
+  background-color: #fffdf9;
   padding: 1.5rem;
   border-radius: 15px;
   margin: 1rem 0;
-  border: 1px solid #333;
+  border: 1px solid #d6ccc2;
 }
 
 .copyManagementSection h3 {
   margin: 0 0 1.5rem 0;
-  color: #9333ea;
+  color: #6f1d1b;
   font-size: 1.2rem;
   text-align: center;
   font-weight: 700;
@@ -324,46 +325,46 @@
 }
 
 .copyStatusCard {
-  background: #1a1a1a;
+  background: #fefcf8;
   padding: 1rem;
   border-radius: 12px;
   text-align: center;
-  border: 1px solid #555;
+  border: 1px solid #d6ccc2;
   transition: all 0.3s ease;
 }
 
 .copyStatusCard:hover {
-  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+  box-shadow: 0 4px 12px rgba(153, 88, 42, 0.2);
   transform: translateY(-2px);
-  border-color: #9333ea;
+  border-color: #bb9457;
 }
 
 .copyStatusCard h4 {
   margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
-  color: #888;
+  color: #6b7280;
   font-weight: 600;
 }
 
 .copyCount {
   font-size: 2rem;
   font-weight: bold;
-  color: #9333ea;
+  color: #99582a;
   display: block;
 }
 
 /* ===== Copy Controls ===== */
 .copyControls {
-  background: #1a1a1a;
+  background: #fefcf8;
   padding: 1.5rem;
   border-radius: 12px;
-  border: 1px solid #555;
+  border: 1px solid #d6ccc2;
 }
 
 .copyControls label {
   margin-bottom: 1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #432818;
 }
 
 .quantityControls {
@@ -374,9 +375,9 @@
 
 .quantityInput {
   max-width: 120px;
-  background-color: #000000;
-  color: #ffffff;
-  border: 2px solid #333;
+  background-color: #fff;
+  color: #432818;
+  border: 2px solid #d6ccc2;
   border-radius: 10px;
   padding: 12px 16px;
   font-size: 1rem;
@@ -385,8 +386,8 @@
 
 .quantityInput:focus {
   outline: none;
-  border-color: #9333ea;
-  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  border-color: #99582a;
+  box-shadow: 0 0 0 3px rgba(153, 88, 42, 0.15);
 }
 
 .copyActionButtons {
@@ -415,30 +416,30 @@
 }
 
 .increaseBtn {
-  background-color: #10b981;
+  background-color: #6f1d1b;
   color: white;
 }
 
 .increaseBtn:hover:not(:disabled) {
-  background-color: #059669;
+  background-color: #432818;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 20px rgba(111, 29, 27, 0.3);
 }
 
 .decreaseBtn {
-  background-color: #ef4444;
+  background-color: #b91c1c;
   color: white;
 }
 
 .decreaseBtn:hover:not(:disabled) {
-  background-color: #dc2626;
+  background-color: #7f1d1d;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 8px 20px rgba(185, 28, 28, 0.3);
 }
 
 .increaseBtn:disabled,
 .decreaseBtn:disabled {
-  background-color: #666;
+  background-color: #d6ccc2;
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
@@ -446,26 +447,19 @@
 
 .copyLoadingText {
   text-align: center;
-  color: #9333ea;
+  color: #99582a;
   font-weight: 600;
   margin: 1rem 0;
 }
 
 .warningText {
-  color: #fbbf24;
-  background-color: rgba(251, 191, 36, 0.1);
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: #b45309;
+  background-color: #fff8e1;
+  border: 1px solid #fbbf24;
   padding: 0.75rem;
   border-radius: 10px;
   margin: 1rem 0;
   font-size: 0.9rem;
-}
-
-.loading-text {
-  text-align: center;
-  color: #888;
-  font-size: 1.1rem;
-  padding: 2rem;
 }
 
 /* ===== Navigation Buttons ===== */
@@ -492,51 +486,53 @@
 }
 
 .backBtn {
-  background: #444;
-  color: white;
+  background: #d6ccc2;
+  color: #432818;
 }
 
 .backBtn:hover {
-  background: #555;
+  background: #bb9457;
+  color: white;
   transform: translateY(-2px);
 }
 
 .nextBtn {
-  background: #9333ea;
+  background: #99582a;
   color: white;
   margin-left: auto;
 }
 
 .nextBtn:hover:not(:disabled) {
-  background: #7c3aed;
+  background: #432818;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(153, 88, 42, 0.3);
 }
 
 .submitBtn {
-  background: #9333ea;
+  background: #6f1d1b;
   color: white;
   margin-left: auto;
   padding: 14px 28px;
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #7c3aed;
+  background: #432818;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(111, 29, 27, 0.3);
 }
 
 .nextBtn:disabled,
 .submitBtn:disabled {
-  background: #666;
+  background: #d6ccc2;
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
 }
 
+/* ===== Pending Changes Section ===== */
 .pendingChanges {
-  background: #fff3cd;
-  border: 1px solid #ffeb3b;
+  background: #fff8e1;
+  border: 1px solid #fcd34d;
   border-radius: 8px;
   padding: 16px;
   margin: 16px 0;
@@ -544,22 +540,22 @@
 
 .pendingChanges h4 {
   margin: 0 0 8px 0;
-  color: #b8860b;
+  color: #92400e;
   font-size: 16px;
 }
 
 .pendingChanges p {
   margin: 4px 0;
-  color: #856404;
+  color: #854d0e;
 }
 
 .pendingChanges strong {
-  color: #6f5500;
+  color: #78350f;
   font-weight: 600;
 }
 
 .clearChangesBtn {
-  background: #dc3545;
+  background: #b91c1c;
   color: white;
   border: none;
   border-radius: 4px;
@@ -571,21 +567,9 @@
 }
 
 .clearChangesBtn:hover {
-  background: #c82333;
+  background: #7f1d1d;
 }
 
-.copyLoadingText {
-  color: #6c757d;
-  font-style: italic;
-  margin-top: 8px;
-}
-
-.warningText {
-  color: #dc3545;
-  font-size: 14px;
-  margin-top: 8px;
-  font-weight: 500;
-}
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .modalContent {
