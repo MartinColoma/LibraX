@@ -1,6 +1,8 @@
-from flask import Flask, jsonify
+# server.py
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+from gemini_chatbot import chat_with_gemini  # ✅ import AI function
 
 app = Flask(__name__)
 CORS(app)
@@ -18,8 +20,19 @@ def get_members():
 @app.route("/api/add_member/<name>")
 def add_member(name):
     members.append(name)
-    socketio.emit("members_update", {"members": members})  # ✅ emit to all clients
+    socketio.emit("members_update", {"members": members})
     return jsonify({"status": "ok", "members": members})
+
+# Chat with Gemini AI
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    data = request.json
+    user_message = data.get("message", "").strip()
+    if not user_message:
+        return jsonify({"error": "Message is required"}), 400
+
+    reply = chat_with_gemini(user_message)
+    return jsonify({"reply": reply})
 
 # Emit current members when a client connects
 @socketio.on("connect")

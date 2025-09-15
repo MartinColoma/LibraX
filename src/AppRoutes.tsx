@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#000",
+        background: "#fff8f0",
       }}
     >
       <LoginModal onClose={() => { window.history.back(); }} />
