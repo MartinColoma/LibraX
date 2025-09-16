@@ -1,9 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import styles from "./AddBookModal.module.css";
-import { X, Plus } from "lucide-react";
+import styles from "./UpdateBookModal.module.css";
+import { X, Plus, Minus } from "lucide-react";
+
+interface Book {
+  book_id: number;
+  title: string;
+  category_name?: string;
+  language?: string;
+  quantity: number;
+}
+
+interface BookDetails {
+  book_id: number;
+  isbn: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  publisher?: string;
+  publication_year?: string;
+  edition?: string;
+  language: string;
+  category_id?: number;
+  category_name?: string;
+  category_type?: string;
+  authors: string[];
+  copy_count: number;
+  available_copies: number;
+  borrowed_copies: number;
+  unavailable_copies: number;
+}
 
 interface Props {
+  bookToEdit: Book;
   onClose: () => void;
   refreshBooks: () => void;
 }
@@ -19,43 +48,19 @@ interface Author {
   author_name: string;
 }
 
-interface NavProps {
-  step: number;
-  maxStep: number;
-  loading: boolean;
-  onBack: () => void;
-  onProceed: () => void; // Changed from onNext to onProceed
+interface CopyManagementResult {
+  success: boolean;
+  message: string;
+  book_id: string;
+  action: string;
+  quantity: number;
+  new_copy_count: number;
 }
 
-const NavigationButtons: React.FC<NavProps> = ({
-  step,
-  maxStep,
-  loading,
-  onBack,
-  onProceed, // Updated prop name
-}) => {
-  return (
-    <div className={styles.navButtons}>
-      {step > 1 && (
-        <button type="button" onClick={onBack} className={styles.backBtn}>
-          Back
-        </button>
-      )}
-      <button
-        type="button"
-        onClick={onProceed} // Uses unified handler
-        className={step < maxStep ? styles.nextBtn : styles.submitBtn}
-        disabled={loading}
-      >
-        {loading ? "Adding..." : step < maxStep ? "Next" : "Add Book"}
-      </button>
-    </div>
-  );
-};
-
-const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
+const UpdateBookModal: React.FC<Props> = ({ bookToEdit, onClose, refreshBooks }) => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(true);
 
   const [formData, setFormData] = useState({
     isbn: "",
@@ -69,20 +74,73 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     category_id: "",
     category_type: "fiction",
     authors: "",
-    numCopies: 1,
   });
 
+  const [bookDetails, setBookDetails] = useState<BookDetails | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [authorsList, setAuthorsList] = useState<Author[]>([]);
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [authorSearch, setAuthorSearch] = useState("");
   const [categorySearch, setCategorySearch] = useState("");
 
-  // ✅ NEW: Add Author Modal State
+  // Add Author Modal State
   const [showAddAuthor, setShowAddAuthor] = useState(false);
   const [newAuthorName, setNewAuthorName] = useState("");
   const [newAuthorBio, setNewAuthorBio] = useState("");
   const [addingAuthor, setAddingAuthor] = useState(false);
+
+  // Copy Management State - CHANGED: Now tracks pending changes instead of applying immediately
+  const [copyQuantity, setCopyQuantity] = useState(1);
+  const [copyChanges, setCopyChanges] = useState<{
+    action: 'increase' | 'decrease' | null;
+    quantity: number;
+  }>({
+    action: null,
+    quantity: 0
+  });
+
+  // Load book details when component mounts
+  useEffect(() => {
+    const loadBookDetails = async () => {
+      try {
+        setLoadingDetails(true);
+        const response = await axios.get<BookDetails>(
+          `http://localhost:5000/books/${bookToEdit.book_id}`
+        );
+        
+        const bookDetails = response.data;
+        setBookDetails(bookDetails);
+        
+        setFormData({
+          isbn: bookDetails.isbn || "",
+          title: bookDetails.title || "",
+          subtitle: bookDetails.subtitle || "",
+          description: bookDetails.description || "",
+          publisher: bookDetails.publisher || "",
+          publication_year: bookDetails.publication_year || "",
+          edition: bookDetails.edition || "",
+          language: bookDetails.language || "English",
+          category_id: bookDetails.category_id?.toString() || "",
+          category_type: bookDetails.category_type || "fiction",
+          authors: bookDetails.authors.join(", "),
+        });
+
+        // Set category search if category exists
+        if (bookDetails.category_name) {
+          setCategorySearch(bookDetails.category_name);
+        }
+
+      } catch (error) {
+        console.error("❌ Failed to load book details:", error);
+        alert("Failed to load book details. Please try again.");
+        onClose();
+      } finally {
+        setLoadingDetails(false);
+      }
+    };
+
+    loadBookDetails();
+  }, [bookToEdit.book_id, onClose]);
 
   // Fetch categories once
   useEffect(() => {
@@ -92,11 +150,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
           "http://localhost:5000/categories"
         );
         setCategories(res.data);
-        setFilteredCategories(
-          res.data.filter(
-            (c) => c.category_type.toLowerCase() === "fiction"
-          )
-        );
       } catch (error) {
         console.error("❌ Failed to fetch categories:", error);
       }
@@ -130,6 +183,23 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     else setAuthorsList([]);
   }, [authorSearch]);
 
+  // CHANGED: Copy Management Functions - Now just track pending changes
+  const handleCopyChange = (action: 'increase' | 'decrease') => {
+    if (copyQuantity <= 0) {
+      alert("⚠️ Please enter a valid quantity.");
+      return;
+    }
+
+    // Check if trying to decrease more than available
+    if (action === 'decrease' && bookDetails && copyQuantity > bookDetails.available_copies) {
+      alert(`⚠️ Cannot remove ${copyQuantity} copies. Only ${bookDetails.available_copies} available copies.`);
+      return;
+    }
+
+    setCopyChanges({ action, quantity: copyQuantity });
+    alert(`📝 Copy change recorded: ${action} ${copyQuantity} cop${copyQuantity === 1 ? 'y' : 'ies'}. Click "Update Book" to apply all changes.`);
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -151,7 +221,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // ✅ NEW: Add Author Function
+  // Add Author Function
   const handleAddAuthor = async () => {
     if (!newAuthorName.trim()) {
       alert("⚠️ Please enter an author name.");
@@ -168,7 +238,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
       if (response.status === 201) {
         alert(`✅ Author "${newAuthorName}" added successfully!`);
         
-        // Add the new author to current authors list and form
+        // Add the new author to current authors list
         const currentAuthors = formData.authors ? formData.authors + ", " : "";
         setFormData({
           ...formData,
@@ -196,20 +266,21 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
       case 1:
         return formData.isbn.trim() && formData.title.trim();
       case 2:
-        // ✅ FIXED: Better validation for category - either ID is set OR search matches exactly
         const categoryValid = formData.category_id || 
           (categorySearch && filteredCategories.find(
             (cat) => cat.category_name.toLowerCase() === categorySearch.toLowerCase()
           ));
         return formData.category_type && categoryValid;
       case 3:
-        return formData.authors.trim() && formData.numCopies > 0;
+        return formData.authors.trim();
+      case 4:
+        return true; // Copy management step is always valid
       default:
         return true;
     }
   };
 
-  // 🎯 UNIFIED METHOD - handles Next, Submit, and Enter key (same as UpdateBookModal)
+  // 🎯 UNIFIED METHOD - handles Next, Submit, and Enter key
   const handleProceed = async () => {
     if (!validateStep()) {
       alert("⚠️ Please fill in all required fields before continuing.");
@@ -217,7 +288,7 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     }
 
     // If not on final step, go to next step
-    if (step < 3) {
+    if (step < 4) {
       setStep(prev => prev + 1);
       return;
     }
@@ -226,8 +297,9 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     await submitForm();
   };
 
+  // CHANGED: submitForm now handles both book updates AND copy management
   const submitForm = async () => {
-    // ✅ FIXED: Ensure category_id is set before submitting
+    // Ensure category_id is set before submitting
     let finalFormData = { ...formData };
     if (!formData.category_id && categorySearch) {
       const match = filteredCategories.find(
@@ -243,60 +315,67 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:5000/books/add_book",
+      // 1️⃣ First, update the book information
+      const bookUpdateResponse = await axios.put(
+        `http://localhost:5000/books/update_book/${bookToEdit.book_id}`,
         {
           ...finalFormData,
-          authors: finalFormData.authors.split(",").map((a) => a.trim()),
+          authors: finalFormData.authors.split(",").map((a) => a.trim()).filter(Boolean),
         }
       );
 
-      console.log("Server response:", response.data);
+      console.log("Book update response:", bookUpdateResponse.data);
 
-      if (response.status === 201 && response.data.message) {
-        alert(response.data.message);
-      } else {
-        alert("✅ Book added successfully!");
+      if (bookUpdateResponse.status !== 200) {
+        throw new Error("Failed to update book information");
       }
 
-      // Clear form after success
-      setFormData({
-        isbn: "",
-        title: "",
-        subtitle: "",
-        description: "",
-        publisher: "",
-        publication_year: "",
-        edition: "",
-        language: "English",
-        category_id: "",
-        category_type: "fiction",
-        authors: "",
-        numCopies: 1,
-      });
+      // 2️⃣ Then, handle copy management if there are pending changes
+      if (copyChanges.action && copyChanges.quantity > 0) {
+        const copyResponse = await axios.put<CopyManagementResult>(
+          `http://localhost:5000/books/${bookToEdit.book_id}/copies`,
+          {
+            action: copyChanges.action,
+            quantity: copyChanges.quantity
+          }
+        );
 
-      // ✅ Refresh table in parent component
+        console.log("Copy management response:", copyResponse.data);
+
+        if (!copyResponse.data.success) {
+          throw new Error(copyResponse.data.message || "Failed to update copies");
+        }
+      }
+
+      // 3️⃣ Success - show appropriate message
+      let successMessage = "✅ Book information updated successfully!";
+      if (copyChanges.action && copyChanges.quantity > 0) {
+        successMessage += ` Also ${copyChanges.action}d ${copyChanges.quantity} cop${copyChanges.quantity === 1 ? 'y' : 'ies'}.`;
+      }
+
+      alert(successMessage);
       refreshBooks();
-
       onClose();
+
     } catch (error: any) {
-      console.error("❌ Error adding book:", error);
+      console.error("❌ Error updating book:", error);
       alert(
         error.response?.data?.error ||
-          "Failed to add book. Check the console for details."
+        error.message ||
+        "Failed to update book. Check the console for details."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBack = () => setStep((prev) => prev - 1);
+  const handleBack = () => setStep(prev => prev - 1);
 
-  // 🎯 Enter key uses the same unified method (same as UpdateBookModal)
+  // 🎯 Enter key uses the same unified method
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    if (e.key === "Enter" && !showAddAuthor) {
+    if (e.key === "Enter" && !showAddAuthor && step < 4) {
       e.preventDefault();
-      handleProceed(); // Uses the same unified method
+      handleProceed();
     }
   };
 
@@ -315,13 +394,44 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
     }
   };
 
+  // CHANGED: Calculate predicted copy count for display
+  const getPredictedCopyCount = () => {
+    if (!bookDetails || !copyChanges.action) return bookDetails?.copy_count || 0;
+    
+    if (copyChanges.action === 'increase') {
+      return bookDetails.copy_count + copyChanges.quantity;
+    } else {
+      return bookDetails.copy_count - copyChanges.quantity;
+    }
+  };
+
+  const getPredictedAvailableCopies = () => {
+    if (!bookDetails || !copyChanges.action) return bookDetails?.available_copies || 0;
+    
+    if (copyChanges.action === 'increase') {
+      return bookDetails.available_copies + copyChanges.quantity;
+    } else {
+      return bookDetails.available_copies - copyChanges.quantity;
+    }
+  };
+
+  if (loadingDetails) {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <p className="loading-text">Loading book details...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <button onClick={onClose} className={styles.modalCloseBtn}>
           <X size={20} />
         </button>
-        <h2>Add New Book</h2>
+        <h2>Update Book: {bookToEdit.title}</h2>
 
         {/* Step Indicator */}
         <div className={styles.stepper}>
@@ -334,9 +444,20 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
           <div className={`${styles.step} ${step >= 3 ? styles.active : ""}`}>
             3
           </div>
+          <div className={`${styles.step} ${step >= 4 ? styles.active : ""}`}>
+            4
+          </div>
         </div>
 
-        {/* ✅ NEW: Add Author Modal */}
+        {/* Step Labels */}
+        <div className={styles.stepLabels}>
+          <span className={step === 1 ? styles.activeLabel : ""}>Basic Info</span>
+          <span className={step === 2 ? styles.activeLabel : ""}>Category</span>
+          <span className={step === 3 ? styles.activeLabel : ""}>Authors</span>
+          <span className={step === 4 ? styles.activeLabel : ""}>Copies</span>
+        </div>
+
+        {/* Add Author Modal */}
         {showAddAuthor && (
           <div className={styles.addAuthorModal}>
             <h3>Add New Author</h3>
@@ -383,7 +504,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="isbn"
                 value={formData.isbn}
                 onChange={handleChange}
-                placeholder="Enter ISBN here"
                 required
               />
 
@@ -394,7 +514,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="Enter Book Title"
                 required
               />
 
@@ -403,7 +522,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="subtitle"
                 value={formData.subtitle}
                 onChange={handleChange}
-                placeholder="Enter Book Subtitle"
               />
 
               <label>Description</label>
@@ -411,7 +529,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Enter Book Description"
               />
             </>
           )}
@@ -424,7 +541,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="publisher"
                 value={formData.publisher}
                 onChange={handleChange}
-                placeholder="Enter Publishing Company"
               />
 
               <label>Publication Year</label>
@@ -432,7 +548,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="publication_year"
                 value={formData.publication_year}
                 onChange={handleChange}
-                placeholder="Enter Year Published"
               />
 
               <label>Edition</label>
@@ -440,7 +555,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="edition"
                 value={formData.edition}
                 onChange={handleChange}
-                placeholder="Enter Book Edition"
               />
 
               <label>
@@ -469,7 +583,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 }
                 onChange={(e) => {
                   setCategorySearch(e.target.value);
-                  // Check if the typed value matches any category immediately
                   const match = filteredCategories.find(
                     (cat) =>
                       cat.category_name.toLowerCase() === e.target.value.toLowerCase()
@@ -485,7 +598,6 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 }}
                 onBlur={handleCategoryBlur}
                 list="categories"
-                placeholder="Select Book Genre"
               />
               <datalist id="categories">
                 {filteredCategories
@@ -507,12 +619,11 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                 name="language"
                 value={formData.language}
                 onChange={handleChange}
-                placeholder="Enter Book Language"
               />
             </>
           )}
 
-          {/* Step 3: Authors & Copies */}
+          {/* Step 3: Authors */}
           {step === 3 && (
             <>
               <div className={styles.authorFieldContainer}>
@@ -549,31 +660,125 @@ const AddBookModal: React.FC<Props> = ({ onClose, refreshBooks }) => {
                   ))}
                 </datalist>
               </div>
-
-              <label>
-                Number of Copies <span className={styles.required}>*</span>
-              </label>
-              <input
-                type="number"
-                name="numCopies"
-                min="1"
-                value={formData.numCopies}
-                onChange={handleChange}
-              />
             </>
           )}
 
-          <NavigationButtons
-            step={step}
-            maxStep={3}
-            loading={loading}
-            onBack={handleBack}
-            onProceed={handleProceed} // Uses unified handler
-          />
+          {/* CHANGED: Step 4: Copy Management - Now shows pending changes */}
+          {step === 4 && bookDetails && (
+            <>
+              <div className={styles.copyManagementSection}>
+                <h3>📚 Copy Management</h3>
+                
+                {/* Copy Status Display */}
+                <div className={styles.copyStatusGrid}>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Current Total</h4>
+                    <span className={styles.copyCount}>{bookDetails.copy_count}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Available</h4>
+                    <span className={styles.copyCount}>{bookDetails.available_copies}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Borrowed</h4>
+                    <span className={styles.copyCount}>{bookDetails.borrowed_copies}</span>
+                  </div>
+                  <div className={styles.copyStatusCard}>
+                    <h4>Unavailable</h4>
+                    <span className={styles.copyCount}>{bookDetails.unavailable_copies}</span>
+                  </div>
+                </div>
+
+                {/* CHANGED: Show pending changes */}
+                {copyChanges.action && (
+                  <div className={styles.pendingChanges}>
+                    <h4>📋 Pending Changes</h4>
+                    <p>
+                      Will <strong>{copyChanges.action}</strong> {copyChanges.quantity} cop{copyChanges.quantity === 1 ? 'y' : 'ies'}
+                    </p>
+                    <p>
+                      New Total: <strong>{bookDetails.copy_count}</strong> → <strong>{getPredictedCopyCount()}</strong>
+                    </p>
+                    <p>
+                      New Available: <strong>{bookDetails.available_copies}</strong> → <strong>{getPredictedAvailableCopies()}</strong>
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setCopyChanges({ action: null, quantity: 0 })}
+                      className={styles.clearChangesBtn}
+                    >
+                      Clear Changes
+                    </button>
+                  </div>
+                )}
+
+                {/* Copy Management Controls */}
+                <div className={styles.copyControls}>
+                  <label>Quantity to Add/Remove:</label>
+                  <div className={styles.quantityControls}>
+                    <input
+                      type="number"
+                      min="1"
+                      value={copyQuantity}
+                      onChange={(e) => setCopyQuantity(parseInt(e.target.value) || 1)}
+                      className={styles.quantityInput}
+                    />
+                    
+                    <div className={styles.copyActionButtons}>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyChange('increase')}
+                        className={styles.increaseBtn}
+                        title="Add Copies"
+                      >
+                        <Plus size={16} />
+                        Add Copies
+                      </button>
+                      
+                      <button
+                        type="button"
+                        onClick={() => handleCopyChange('decrease')}
+                        disabled={bookDetails.available_copies === 0}
+                        className={styles.decreaseBtn}
+                        title="Remove Available Copies"
+                      >
+                        <Minus size={16} />
+                        Remove Copies
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {bookDetails.available_copies === 0 && (
+                    <p className={styles.warningText}>
+                      ⚠️ No available copies to remove. Only available copies can be removed.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* 🎯 NAVIGATION BUTTONS */}
+          <div className={styles.navButtons}>
+            {step > 1 && (
+              <button type="button" onClick={handleBack} className={styles.backBtn}>
+                Back
+              </button>
+            )}
+            
+            <button
+              type="button"
+              onClick={handleProceed}
+              className={step < 4 ? styles.nextBtn : styles.submitBtn}
+              disabled={loading}
+            >
+              {loading ? "Updating..." : step < 4 ? "Next" : "Update Book"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
   );
 };
 
-export default AddBookModal;
+export default UpdateBookModal;

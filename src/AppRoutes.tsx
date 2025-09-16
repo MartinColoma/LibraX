@@ -11,8 +11,7 @@ import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accoun
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
-import ADash_Home from './components/pages/Dashboards/AdminDashboard/Dashboard/AD_Home';
-
+import Flask_Server from './components/pages/test'
 // Modals
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
@@ -27,7 +26,7 @@ const LoginPage: React.FC = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#000",
+        background: "#fff8f0",
       }}
     >
       <LoginModal onClose={() => { window.history.back(); }} />
@@ -46,9 +45,11 @@ const AppRoutes: React.FC = () => {
     <>
       <Routes location={background || location}>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/hok-library-v2" element={<LandingPage />} />
         <Route path='*' element={<PageNotFound />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/db" element={<DbTest />} />
+        <Route path="/test" element={<Flask_Server />} />
 
         {/* librarian dashboard routes */}
         <Route path="/librarian/dashboard/home" element={<LibDash_Home />} />
@@ -57,8 +58,6 @@ const AppRoutes: React.FC = () => {
         <Route path="/librarian/dashboard/payments" element={<LibDash_Pay />} />
         <Route path="/librarian/dashboard/reservation" element={<LibDash_Reserve />} />
 
-        {/* admin dashboard routes */}
-        <Route path="/admin/dashboard/home" element={<ADash_Home />} />
       </Routes>
 
       {/* Modal Route Overlay */}

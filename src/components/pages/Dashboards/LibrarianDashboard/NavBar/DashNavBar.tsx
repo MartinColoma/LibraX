@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
       icon: <LayoutDashboard size={18} />,
     },
     {
-      name: "Accounts",
+      name: "Manage Users",
       path: "/librarian/dashboard/accounts",
       icon: <Users size={18} />,
     },
@@ -103,7 +103,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
       <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
         <div className="sidebar-header">
           <div className="logo">
-            📚 <span className="logo-text">HokLibrary</span>
+            📚 <span className="logo-text">LibraX AIoT Kiosk  </span>
           </div>
 
           {/* Floating Collapse Button */}

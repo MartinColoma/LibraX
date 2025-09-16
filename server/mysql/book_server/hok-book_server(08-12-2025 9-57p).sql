@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 12, 2025 at 03:56 PM
+-- Generation Time: Aug 12, 2025 at 07:58 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -71,14 +71,15 @@ CREATE TABLE `books` (
 --
 
 INSERT INTO `books` (`book_id`, `isbn`, `title`, `subtitle`, `description`, `publisher`, `publication_year`, `edition`, `category_id`, `language`, `date_added`) VALUES
-('1200956312', '213411234', 'catt typo', NULL, NULL, NULL, NULL, NULL, 7, 'English', '2025-08-12 13:38:16'),
+('1200956312', '213411234', 'catt typo', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 13:38:16'),
 ('1460652468', '79846531', 'Soda Pop', 'hey hey', 'hey hey', NULL, NULL, NULL, NULL, 'English', '2025-08-12 12:17:36'),
 ('3504139608', '12312312', 'missing catt', NULL, NULL, NULL, NULL, NULL, 30, 'English', '2025-08-12 13:36:19'),
-('4020091340', '1234234', 'Gabriela', NULL, NULL, NULL, NULL, NULL, 17, 'English', '2025-08-12 12:22:12'),
-('4614273899', '23412', 'catt', NULL, NULL, 'PBCOm', '2021', '1st', 10, 'English', '2025-08-12 13:36:49'),
+('4020091340', '1234234', 'Gabriela', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 12:22:12'),
+('4614273899', '23412', 'catt', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 13:36:49'),
+('5469951004', '1231231123', '1231', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 13:34:46'),
 ('7725147954', '2341324', 'Category Missing Again', NULL, NULL, NULL, NULL, NULL, 12, 'English', '2025-08-12 13:08:48'),
 ('8016745074', '75445213', 'Rolling in the Deep', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 12:11:29'),
-('8108356816', '341324', 'Golden', NULL, NULL, NULL, NULL, NULL, 16, 'English', '2025-08-12 12:10:42');
+('8108356816', '341324', 'Golden', NULL, NULL, NULL, NULL, NULL, NULL, 'English', '2025-08-12 12:10:42');
 
 -- --------------------------------------------------------
 
@@ -101,6 +102,7 @@ INSERT INTO `book_authors` (`book_id`, `author_id`) VALUES
 ('3504139608', 2147483647),
 ('4020091340', 3),
 ('4614273899', 3),
+('5469951004', 2147483647),
 ('7725147954', 3),
 ('8016745074', 1),
 ('8108356816', 2);
@@ -134,6 +136,11 @@ INSERT INTO `book_copies` (`copy_id`, `book_id`, `barcode`, `status`, `book_cond
 ('3504139608001', '3504139608', 83893938, 'Available', 'New', 'Main Shelf', '2025-08-12 13:36:19'),
 ('4020091340001', '4020091340', 74807232, 'Available', 'New', 'Main Shelf', '2025-08-12 12:22:12'),
 ('4614273899001', '4614273899', 58036723, 'Available', 'New', 'Main Shelf', '2025-08-12 13:36:49'),
+('5469951004001', '5469951004', 73883699, 'Available', 'New', 'Main Shelf', '2025-08-12 13:34:46'),
+('5469951004002', '5469951004', 71748946, 'Available', 'New', 'Main Shelf', '2025-08-12 13:34:46'),
+('5469951004003', '5469951004', 40754918, 'Available', 'New', 'Main Shelf', '2025-08-12 13:34:46'),
+('5469951004004', '5469951004', 33680710, 'Available', 'New', 'Main Shelf', '2025-08-12 13:34:46'),
+('5469951004005', '5469951004', 68571689, 'Available', 'New', 'Main Shelf', '2025-08-12 13:34:46'),
 ('7725147954001', '7725147954', 99490131, 'Available', 'New', 'Main Shelf', '2025-08-12 13:08:48'),
 ('7725147954002', '7725147954', 89821947, 'Available', 'New', 'Main Shelf', '2025-08-12 13:08:48'),
 ('7725147954003', '7725147954', 26348029, 'Available', 'New', 'Main Shelf', '2025-08-12 13:08:48'),
@@ -266,9 +273,11 @@ CREATE TABLE `inventory_logs` (
 INSERT INTO `inventory_logs` (`log_id`, `copy_id`, `action`, `performed_by`, `log_date`) VALUES
 ('1057753519', '7725147954003', 'Added', 'Librarian', '2025-08-12 13:08:48'),
 ('1058749237', '7725147954002', 'Added', 'Librarian', '2025-08-12 13:08:48'),
+('1948405304', '5469951004001', 'Added', 'Librarian', '2025-08-12 13:34:46'),
 ('2713299495', '1460652468004', 'Added', 'Librarian', '2025-08-12 12:17:36'),
 ('2797681430', '8108356816008', 'Added', 'Librarian', '2025-08-12 12:10:42'),
 ('2983446255', '7725147954004', 'Added', 'Librarian', '2025-08-12 13:08:48'),
+('3152727795', '5469951004003', 'Added', 'Librarian', '2025-08-12 13:34:46'),
 ('3159107114', '1460652468002', 'Added', 'Librarian', '2025-08-12 12:17:36'),
 ('3727900363', '8108356816006', 'Added', 'Librarian', '2025-08-12 12:10:42'),
 ('3850930420', '4614273899001', 'Added', 'Librarian', '2025-08-12 13:36:49'),
@@ -284,14 +293,17 @@ INSERT INTO `inventory_logs` (`log_id`, `copy_id`, `action`, `performed_by`, `lo
 ('6358265443', '8108356816003', 'Added', 'Librarian', '2025-08-12 12:10:42'),
 ('6648156705', '8108356816009', 'Added', 'Librarian', '2025-08-12 12:10:42'),
 ('6649779191', '7725147954001', 'Added', 'Librarian', '2025-08-12 13:08:48'),
+('6947399316', '5469951004005', 'Added', 'Librarian', '2025-08-12 13:34:46'),
 ('7114771675', '1460652468003', 'Added', 'Librarian', '2025-08-12 12:17:36'),
 ('7920338854', '3504139608001', 'Added', 'Librarian', '2025-08-12 13:36:19'),
 ('8010741376', '8016745074001', 'Added', 'Librarian', '2025-08-12 12:11:29'),
 ('8353803054', '4020091340001', 'Added', 'Librarian', '2025-08-12 12:22:12'),
+('8369082157', '5469951004002', 'Added', 'Librarian', '2025-08-12 13:34:46'),
 ('8453547157', '1460652468001', 'Added', 'Librarian', '2025-08-12 12:17:36'),
 ('8730850739', '8108356816001', 'Added', 'Librarian', '2025-08-12 12:10:42'),
 ('9741552040', '8108356816010', 'Added', 'Librarian', '2025-08-12 12:10:42'),
-('9876363546', '7725147954005', 'Added', 'Librarian', '2025-08-12 13:08:48');
+('9876363546', '7725147954005', 'Added', 'Librarian', '2025-08-12 13:08:48'),
+('9962557973', '5469951004004', 'Added', 'Librarian', '2025-08-12 13:34:46');
 
 --
 -- Indexes for dumped tables

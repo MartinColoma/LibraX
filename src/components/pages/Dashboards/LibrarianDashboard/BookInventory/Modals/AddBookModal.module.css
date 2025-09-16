@@ -2,7 +2,7 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.35); /* softer overlay */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,8 +10,8 @@
 }
 
 .modalContent {
-  background: #1a1a1a;
-  color: #ffffff;
+  background: #fefcf9; /* soft off-white */
+  color: #333; /* dark neutral text */
   padding: 40px 50px;
   border-radius: 20px;
   width: 600px;
@@ -19,8 +19,8 @@
   max-height: 90vh;
   overflow-y: auto;
   scrollbar-width: none;
-  border: 2px solid #9333ea;
-  box-shadow: 0 0 25px rgba(147, 51, 234, 0.2);
+  border: 2px solid #d9d5d0; /* warm gray */
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -34,11 +34,12 @@
 
 .modalContent h2 {
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 10px;
+  color: #6f4e37; /* MUJI brown */
 }
 
 /* ===== Stepper ===== */
@@ -53,21 +54,24 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  border: 2px solid #555;
+  border: 2px solid #c9c4bd;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  color: #888;
+  color: #aaa;
+  background: #faf8f5;
   transition: all 0.3s ease;
 }
 
 .step.active {
-  border-color: #9333ea;
+  border-color: #b46a55; /* terracotta */
   color: #fff;
-  background: #9333ea;
-  box-shadow: 0 0 10px rgba(147, 51, 234, 0.5);
+  background: #b46a55;
+  box-shadow: 0 0 10px rgba(180, 106, 85, 0.3);
 }
+
+/* ===== Close Button ===== */
 .modalCloseBtn {
   position: absolute;
   top: 20px;
@@ -79,10 +83,10 @@
   cursor: pointer;
   transition: color 0.3s ease;
 }
-.modalCloseBtn:hover {
-  color: #9333ea;
-}
 
+.modalCloseBtn:hover {
+  color: #b46a55;
+}
 
 /* ===== Form Styling ===== */
 .modalContent form {
@@ -94,9 +98,9 @@
 .modalContent input,
 .modalContent select,
 .modalContent textarea {
-  background-color: #000000;
-  color: #ffffff;
-  border: 2px solid #333;
+  background-color: #faf8f5;
+  color: #333;
+  border: 2px solid #d9d5d0;
   border-radius: 1.5rem;
   padding: 12px 16px;
   font-size: 14px;
@@ -108,20 +112,140 @@
   border-radius: 1.5rem;
   resize: vertical;
   min-height: 80px;
-  grid-column: span 2; /* span full width */
+  grid-column: span 2;
 }
 
 .modalContent input:focus,
 .modalContent select:focus,
 .modalContent textarea:focus {
   outline: none;
-  border-color: #9333ea;
-  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  border-color: #6f4e37; /* deep brown focus */
+  box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.15);
 }
 
 .modalContent input::placeholder,
 .modalContent textarea::placeholder {
-  color: #888;
+  color: #999;
+}
+
+/* ===== Author Field Container ===== */
+.authorFieldContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  grid-column: span 2;
+}
+
+.authorInputContainer {
+  grid-column: span 2;
+}
+
+/* Add Author Button */
+.addAuthorBtn {
+  background: #8ca17a; /* sage green */
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addAuthorBtn:hover {
+  background: #748b64;
+  transform: scale(1.1);
+}
+
+/* ===== Add Author Modal ===== */
+.addAuthorModal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border: 2px solid #8ca17a;
+  border-radius: 15px;
+  padding: 25px;
+  width: 400px;
+  max-width: 90%;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(140, 161, 122, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.addAuthorModal h3 {
+  color: #8ca17a;
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.addAuthorModal input,
+.addAuthorModal textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  background: #fafafa;
+  color: #333;
+  border: 2px solid #d9d5d0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.addAuthorModal input:focus,
+.addAuthorModal textarea:focus {
+  border-color: #8ca17a;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(140, 161, 122, 0.15);
+}
+
+.addAuthorButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cancelBtn,
+.addBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cancelBtn {
+  background: #e5e3df;
+  color: #444;
+}
+
+.cancelBtn:hover {
+  background: #d6d3cf;
+}
+
+.addBtn {
+  background: #8ca17a;
+  color: white;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #748b64;
+}
+
+.addBtn:disabled {
+  background: #c9c4bd;
+  cursor: not-allowed;
+}
+
+/* ===== Required Fields ===== */
+.required {
+  color: #b46a55;
+  font-weight: bold;
 }
 
 /* ===== Navigation Buttons ===== */
@@ -145,21 +269,21 @@
 }
 
 .backBtn {
-  background: #444;
-  color: white;
+  background: #e5e3df;
+  color: #333;
 }
 
 .backBtn:hover {
-  background: #555;
+  background: #d6d3cf;
 }
 
 .nextBtn {
-  background: #9333ea;
+  background: #b46a55;
   color: white;
 }
 
 .nextBtn:hover {
-  background: #7c3aed;
+  background: #9d5746;
 }
 
 /* ===== Submit Button ===== */
@@ -170,7 +294,7 @@
   border-radius: 1.5rem;
   font-size: 16px;
   font-weight: 600;
-  background: #9333ea;
+  background: #6f4e37;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -180,13 +304,13 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: #7c3aed;
+  background: #5c3f2d;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(111, 78, 55, 0.25);
 }
 
 .submitBtn:disabled {
-  background: #666;
+  background: #c9c4bd;
   cursor: not-allowed;
 }
 
@@ -195,7 +319,7 @@
   grid-column: span 2;
   padding: 8px;
   background-color: transparent;
-  color: #c084fc;
+  color: #6f4e37;
   border: none;
   cursor: pointer;
   margin-top: 5px;
@@ -203,7 +327,7 @@
 }
 
 .closeBtn:hover {
-  color: #a855f7;
+  color: #b46a55;
 }
 
 /* ===== Animation ===== */
@@ -239,5 +363,14 @@
   .nextBtn,
   .submitBtn {
     width: 100%;
+  }
+
+  .addAuthorModal {
+    width: 95%;
+    padding: 20px;
+  }
+
+  .authorFieldContainer {
+    grid-column: span 1;
   }
 }

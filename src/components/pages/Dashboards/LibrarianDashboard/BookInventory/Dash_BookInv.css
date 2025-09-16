@@ -1,8 +1,29 @@
+/* ===========================
+   Page Layout - MUJI Palette (READABLE VERSION)
+   =========================== */
+
+/* MUJI Colors */
+:root {
+  --dark-brown: #432818;    /* Text/accents */
+  --warm-beige: #bb9457;    /* Primary accent */
+  --falu-red: #6f1d1b;      /* Rich red */
+  --warm-brown: #99582a;    /* Hover/active */
+  --light-cream: #fff8f0;   /* Background */
+  --light-beige: #e5dcc3;   /* Borders/hover */
+  
+  /* Additional readable colors */
+  --table-header: #8b4513;  /* Darker brown for headers */
+  --table-hover: #d4af91;   /* Light tan for hover */
+  --text-on-dark: #ffffff;  /* White text on dark backgrounds */
+  --subtle-grey: #f9f7f4;   /* Very light background for alternating rows */
+}
+
+/* Base Layout */
 .page-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #0a0a0f;
-  color: #f1f1f1;
+  background-color: var(--light-cream);
+  color: var(--dark-brown);
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -10,7 +31,7 @@
 .main-content {
   flex: 1;
   margin-left: 250px; /* match sidebar width */
-  min-height: 100vh; /* Allow natural scrolling */
+  min-height: 100vh;
 }
 
 /* Header */
@@ -23,8 +44,9 @@
 .title-header {
   font-size: 2rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--falu-red);
 }
+
 .filter-container {
   display: flex;
   justify-content: space-between;
@@ -33,18 +55,46 @@
   gap: 10px;
 }
 
+.filter-left {
+  flex: 1;
+}
+
+.filter-right {
+  display: flex;
+  gap: 10px;
+}
+
+/* Inputs & Buttons */
 .search-box {
   flex: 1;
   max-width: 300px;
   padding: 8px 12px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--light-beige);
+  background-color: var(--light-cream);
+  color: var(--dark-brown);
+}
+
+.delete-btn {
+  padding: 10px 20px;
+  background-color: var(--falu-red);
+  color: var(--text-on-dark);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  transform: scale(1.05);
+  background-color: #4d0f0e; /* darker red */
 }
 
 .add-btn {
   padding: 10px 20px;
-  background: linear-gradient(90deg, #6d28d9, #9333ea);
-  color: white;
+  background: linear-gradient(90deg, var(--warm-brown), var(--warm-beige));
+  color: var(--text-on-dark);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -54,71 +104,259 @@
 
 .add-btn:hover {
   transform: scale(1.05);
-  background: linear-gradient(90deg, #7e22ce, #a855f7);
+  background: linear-gradient(90deg, var(--falu-red), var(--warm-beige));
 }
 
+/* ===========================
+   FIXED TABLE STYLES - READABLE
+   =========================== */
 
-/* Table Container */
 .table-container {
   margin-top: 10px;
   overflow-x: auto;
   border-radius: 10px;
-  border: 1px solid #2d2d3a;
+  border: 1px solid var(--light-beige);
+  background-color: #ffffff; /* Clean white background */
 }
 
 .book-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: #1a1a24;
+  background-color: #ffffff; /* White table background */
 }
 
 .book-table th,
 .book-table td {
-  padding: 12px 16px;
+  padding: 12px 16px; /* Increased padding for better readability */
   text-align: left;
-  border-bottom: 1px solid #2d2d3a;
+  border-bottom: 1px solid var(--light-beige);
+  font-size: 0.9rem; /* Slightly larger font */
+  vertical-align: middle;
 }
 
+/* READABLE TABLE HEADER */
 .book-table th {
-  background-color: #2b2b3b;
-  color: #c084fc;
+  background-color: var(--table-header); /* Darker brown */
+  color: var(--text-on-dark); /* White text */
   font-weight: 600;
   text-transform: uppercase;
-  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--warm-brown);
 }
 
-.book-table tr:nth-child(even) {
-  background-color: #15151e;
+/* READABLE TABLE ROWS */
+.book-table td {
+  color: var(--dark-brown); /* Dark brown text on white */
+  background-color: #ffffff; /* White background */
 }
 
-.book-table tr:hover {
-  background-color: #3b0764;
-  color: #fff;
+/* Alternating row colors for better readability */
+.book-table tr:nth-child(even) td {
+  background-color: var(--subtle-grey); /* Very light background */
+}
+
+/* READABLE HOVER STATE */
+.book-table tr:hover td {
+  background-color: var(--table-hover); /* Light tan */
+  color: var(--dark-brown); /* Keep dark text on light background */
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
-.show-more-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0 40px 0;
+
+.book-table th:first-child,
+.book-table td:first-child {
+  text-align: center;
+  width: 32px;
 }
 
-.show-more-btn {
-  background: linear-gradient(90deg, #6d28d9, #9333ea);
-  color: white;
+/* Loading */
+.loading-text {
+  text-align: center;
+  padding: 20px;
+  color: var(--falu-red);
+  font-style: italic;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0 40px 0;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.pagination-info {
+  color: var(--dark-brown);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg, var(--warm-brown), var(--warm-beige));
+  color: var(--text-on-dark);
   border: none;
-  padding: 12px 24px;
-  font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.show-more-btn:hover {
-  background: linear-gradient(90deg, #7e22ce, #a855f7);
+.pagination-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, var(--falu-red), var(--warm-beige));
+  transform: translateY(-1px);
 }
 
-.show-more-btn:disabled {
-  background-color: #ccc;
+.pagination-btn:disabled {
+  background: var(--light-beige);
+  color: #999; /* Darker disabled text */
   cursor: not-allowed;
+  transform: none;
+}
+
+.page-numbers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px;
+}
+
+.page-number {
+  padding: 8px 12px;
+  background: #ffffff; /* White background */
+  color: var(--dark-brown); /* Dark text */
+  border: 1px solid var(--light-beige); /* Subtle border */
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 40px;
+}
+
+.page-number:hover:not(:disabled) {
+  background: var(--warm-beige);
+  color: var(--text-on-dark);
+  border-color: var(--warm-beige);
+}
+
+.page-number.active {
+  background: var(--falu-red);
+  color: var(--text-on-dark);
+  border-color: var(--falu-red);
+}
+
+.page-number:disabled {
+  background: var(--light-beige);
+  color: #999;
+  cursor: not-allowed;
+  border-color: var(--light-beige);
+}
+
+.pagination-ellipsis {
+  padding: 8px 4px;
+  color: #999;
+  font-weight: 500;
+}
+
+/* Responsive pagination */
+@media (max-width: 768px) {
+  .pagination-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pagination-info {
+    order: 2;
+  }
+  .pagination-controls {
+    order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .page-numbers {
+    margin: 0 8px;
+  }
+  .page-number {
+    padding: 6px 8px;
+    min-width: 32px;
+    font-size: 0.75rem;
+  }
+  .pagination-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ===========================
+   READABLE ACTION BUTTONS
+   =========================== */
+
+.action-buttons {
+  display: flex;
+  gap: 8px; /* Increased gap */
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid transparent; /* Subtle border for better definition */
+  padding: 8px; /* Increased padding */
+  cursor: pointer;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin: 0;
+  line-height: 1;
+}
+
+.action-btn:hover {
+  background: var(--light-beige);
+  border-color: var(--light-beige);
+  transform: scale(1.1);
+}
+
+.view-btn {
+  color: var(--falu-red);
+}
+
+.view-btn:hover {
+  color: #4d0f0e;
+  background: #ffeaea; /* Light red background on hover */
+}
+
+.edit-btn {
+  color: var(--warm-brown);
+}
+
+.edit-btn:hover {
+  color: var(--dark-brown);
+  background: #f0e6d6; /* Light brown background on hover */
+}
+
+.delete-row-btn {
+  color: var(--falu-red);
+}
+
+.delete-row-btn:hover {
+  color: #4d0f0e;
+  background: #ffeaea; /* Light red background on hover */
 }

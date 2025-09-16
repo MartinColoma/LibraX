@@ -28,7 +28,7 @@ const Dash_Home: React.FC = () => {
       <main
         className="main-content"
         style={{
-          marginLeft: sidebarCollapsed ? "85px" : "240px", // ✅ shift content
+          marginLeft: sidebarCollapsed ? "85px" : "250px", // ✅ shift content
           transition: "margin 0.3s ease",
         }}
       >

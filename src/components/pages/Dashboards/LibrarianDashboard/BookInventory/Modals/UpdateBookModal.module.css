@@ -1,0 +1,654 @@
+/* UpdateBookModal.module.css - Muji Light Theme */
+
+/* ===== Overlay & Modal ===== */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: #fefcf8; /* soft cream white */
+  color: #432818; /* deep brown text */
+  padding: 40px 50px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border: 2px solid #bb9457; /* warm beige border */
+  box-shadow: 0 0 25px rgba(153, 88, 42, 0.15);
+  position: relative;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modalContent::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  color: #6b7280;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalCloseBtn:hover {
+  color: #99582a;
+}
+
+.modalContent h2 {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 20px 0;
+  padding-right: 2rem;
+  color: #432818;
+}
+
+/* ===== Step Indicator ===== */
+.stepper {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.step {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 2px solid #d6ccc2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.step.active {
+  border-color: #99582a;
+  color: #fff;
+  background: #99582a;
+  box-shadow: 0 0 10px rgba(153, 88, 42, 0.3);
+}
+
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  width: 20px;
+  height: 2px;
+  background-color: #d6ccc2;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.step.active:not(:last-child)::after {
+  background-color: #99582a;
+}
+
+/* Step Labels */
+.stepLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.activeLabel {
+  color: #99582a !important;
+  font-weight: 600;
+}
+
+/* ===== Form Elements ===== */
+.modalContent label {
+  display: block;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+  color: #432818;
+}
+
+.required {
+  color: #b91c1c;
+  font-weight: bold;
+}
+
+.modalContent input,
+.modalContent select,
+.modalContent textarea {
+  background-color: #fffdf9;
+  color: #432818;
+  border: 2px solid #d6ccc2;
+  border-radius: 1.5rem;
+  padding: 12px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modalContent input:focus,
+.modalContent select:focus,
+.modalContent textarea:focus {
+  outline: none;
+  border-color: #99582a;
+  box-shadow: 0 0 0 3px rgba(153, 88, 42, 0.15);
+}
+
+.modalContent input::placeholder,
+.modalContent textarea::placeholder {
+  color: #9ca3af;
+}
+
+.modalContent textarea {
+  border-radius: 1.5rem;
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ===== Author Field Container ===== */
+.authorFieldContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.addAuthorBtn {
+  background: #6f1d1b;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-top: 1rem;
+}
+
+.addAuthorBtn:hover {
+  background: #432818;
+  transform: scale(1.1);
+}
+
+.authorInputContainer {
+  position: relative;
+  flex: 1;
+}
+
+/* ===== Add Author Modal ===== */
+.addAuthorModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fffdf9;
+  border: 2px solid #bb9457;
+  border-radius: 15px;
+  padding: 25px;
+  min-width: 400px;
+  max-width: 90%;
+  z-index: 1001;
+  box-shadow: 0 10px 30px rgba(153, 88, 42, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.addAuthorModal h3 {
+  color: #6f1d1b;
+  font-size: 18px;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.addAuthorModal input,
+.addAuthorModal textarea {
+  width: 100%;
+  margin-bottom: 15px;
+  background: #fffdf9;
+  color: #432818;
+  border: 2px solid #d6ccc2;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.addAuthorModal input:focus,
+.addAuthorModal textarea:focus {
+  border-color: #6f1d1b;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(111, 29, 27, 0.15);
+}
+
+.addAuthorButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.cancelBtn {
+  padding: 8px 16px;
+  background: #d6ccc2;
+  color: #432818;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cancelBtn:hover {
+  background: #bb9457;
+  color: white;
+}
+
+.addBtn {
+  padding: 8px 16px;
+  background: #6f1d1b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.addBtn:hover:not(:disabled) {
+  background: #432818;
+}
+
+.addBtn:disabled {
+  background: #d6ccc2;
+  cursor: not-allowed;
+}
+
+/* ===== Copy Management Section ===== */
+.copyManagementSection {
+  background-color: #fffdf9;
+  padding: 1.5rem;
+  border-radius: 15px;
+  margin: 1rem 0;
+  border: 1px solid #d6ccc2;
+}
+
+.copyManagementSection h3 {
+  margin: 0 0 1.5rem 0;
+  color: #6f1d1b;
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.copyStatusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.copyStatusCard {
+  background: #fefcf8;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #d6ccc2;
+  transition: all 0.3s ease;
+}
+
+.copyStatusCard:hover {
+  box-shadow: 0 4px 12px rgba(153, 88, 42, 0.2);
+  transform: translateY(-2px);
+  border-color: #bb9457;
+}
+
+.copyStatusCard h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.copyCount {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #99582a;
+  display: block;
+}
+
+/* ===== Copy Controls ===== */
+.copyControls {
+  background: #fefcf8;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #d6ccc2;
+}
+
+.copyControls label {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #432818;
+}
+
+.quantityControls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quantityInput {
+  max-width: 120px;
+  background-color: #fff;
+  color: #432818;
+  border: 2px solid #d6ccc2;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.quantityInput:focus {
+  outline: none;
+  border-color: #99582a;
+  box-shadow: 0 0 0 3px rgba(153, 88, 42, 0.15);
+}
+
+.copyActionButtons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.increaseBtn,
+.decreaseBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  flex: 1;
+  min-width: 140px;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.increaseBtn {
+  background-color: #6f1d1b;
+  color: white;
+}
+
+.increaseBtn:hover:not(:disabled) {
+  background-color: #432818;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(111, 29, 27, 0.3);
+}
+
+.decreaseBtn {
+  background-color: #b91c1c;
+  color: white;
+}
+
+.decreaseBtn:hover:not(:disabled) {
+  background-color: #7f1d1d;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(185, 28, 28, 0.3);
+}
+
+.increaseBtn:disabled,
+.decreaseBtn:disabled {
+  background-color: #d6ccc2;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+.copyLoadingText {
+  text-align: center;
+  color: #99582a;
+  font-weight: 600;
+  margin: 1rem 0;
+}
+
+.warningText {
+  color: #b45309;
+  background-color: #fff8e1;
+  border: 1px solid #fbbf24;
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+/* ===== Navigation Buttons ===== */
+.navButtons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.backBtn,
+.nextBtn,
+.submitBtn {
+  padding: 12px 28px;
+  border: none;
+  border-radius: 1.5rem;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 120px;
+}
+
+.backBtn {
+  background: #d6ccc2;
+  color: #432818;
+}
+
+.backBtn:hover {
+  background: #bb9457;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.nextBtn {
+  background: #99582a;
+  color: white;
+  margin-left: auto;
+}
+
+.nextBtn:hover:not(:disabled) {
+  background: #432818;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(153, 88, 42, 0.3);
+}
+
+.submitBtn {
+  background: #6f1d1b;
+  color: white;
+  margin-left: auto;
+  padding: 14px 28px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background: #432818;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(111, 29, 27, 0.3);
+}
+
+.nextBtn:disabled,
+.submitBtn:disabled {
+  background: #d6ccc2;
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
+/* ===== Pending Changes Section ===== */
+.pendingChanges {
+  background: #fff8e1;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.pendingChanges h4 {
+  margin: 0 0 8px 0;
+  color: #92400e;
+  font-size: 16px;
+}
+
+.pendingChanges p {
+  margin: 4px 0;
+  color: #854d0e;
+}
+
+.pendingChanges strong {
+  color: #78350f;
+  font-weight: 600;
+}
+
+.clearChangesBtn {
+  background: #b91c1c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.clearChangesBtn:hover {
+  background: #7f1d1d;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    padding: 30px;
+    border-radius: 25px;
+  }
+
+  .stepper {
+    gap: 0.5rem;
+  }
+
+  .step {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+
+  .stepLabels {
+    font-size: 0.8rem;
+  }
+
+  .copyStatusGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .copyActionButtons {
+    flex-direction: column;
+  }
+
+  .navButtons {
+    flex-direction: column-reverse;
+  }
+
+  .backBtn,
+  .nextBtn,
+  .submitBtn {
+    width: 100%;
+  }
+
+  .addAuthorModal {
+    width: 90%;
+    min-width: unset;
+    padding: 20px;
+  }
+
+  .authorFieldContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addAuthorBtn {
+    width: 100%;
+    border-radius: 1.5rem;
+    height: 40px;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 25px;
+    margin: 10px;
+  }
+
+  .copyStatusGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .quantityControls {
+    align-items: center;
+  }
+
+  .quantityInput {
+    max-width: 100px;
+  }
+
+  .modalContent h2 {
+    font-size: 24px;
+    padding-right: 1rem;
+  }
+}
