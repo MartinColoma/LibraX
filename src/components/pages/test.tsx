@@ -1,38 +1,13 @@
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { useState } from "react";
 import './test.css';
 
 // Connect to Flask-SocketIO backend
-const socket = io("http://localhost:5000"); // replace with Raspberry Pi IP if running on Pi
 
 type ChatMessage = { sender: "You" | "AI"; text: string };
 
 export default function Members() {
-  const [members, setMembers] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-
-  // 🔹 Fetch initial members + live updates
-  useEffect(() => {
-    fetch("/api/members")
-      .then(res => res.json())
-      .then(data => setMembers(data.members || []));
-
-    socket.on("members_update", (data: { members: string[] }) => {
-      setMembers(data.members);
-    });
-
-    socket.on("connect", () => {
-      fetch("/api/members")
-        .then(res => res.json())
-        .then(data => setMembers(data.members || []));
-    });
-
-    return () => {
-      socket.off("members_update");
-      socket.off("connect");
-    };
-  }, []);
 
   // 🔹 Chat API call
   const sendMessage = async () => {
@@ -65,14 +40,6 @@ export default function Members() {
   };
 
   return (
-    <div className="members-container">
-      <h1>Members</h1>
-      <ul>
-        {members.map((m, i) => (
-          <li key={i}>{m}</li>
-        ))}
-      </ul>
-
       <div className="chat-container">
         <h2>📚 Library Assistant</h2>
 
@@ -100,6 +67,5 @@ export default function Members() {
           </button>
         </div>
       </div>
-    </div>
   );
 }

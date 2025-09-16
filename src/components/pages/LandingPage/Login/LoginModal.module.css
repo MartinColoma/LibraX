@@ -12,7 +12,7 @@
   background: #fff8f0; /* light cream */
   color: #2d2d2d;
   border-radius: 20px;
-  width: 900px;
+  width: 700px;
   max-width: 95%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -39,7 +39,7 @@
 
 .modalBody {
   display: flex;
-  min-height: 500px;
+  min-height: 300px;
 }
 
 /* Left side - Image Section */
