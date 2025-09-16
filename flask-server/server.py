@@ -9,7 +9,7 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Initial data
-members = ["Karl Iligan", "Kent Arado", "Martin Coloma", "Earl Liporada", "Paul De Belliena", "Angel Delera"]
+members = ["Karl Iligan", "Kent Arado", "Martin Coloma", "Earl Liporada", "Paul De Belliena"]
 
 # REST endpoint to get current members (does NOT emit)
 @app.route("/api/members")

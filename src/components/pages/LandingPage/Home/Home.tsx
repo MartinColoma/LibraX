@@ -6,7 +6,7 @@ import usePageMeta from '../../../../hooks/usePageMeta';
 import LoginPage from '../Login/LoginModal';
 
 const Home: React.FC = () => {
-  usePageMeta("LibraX - Management System", "HoKLibrary 128x128.png");
+  usePageMeta("LibraX | AIoT Library Kiosk", "HoKLibrary 128x128.png");
   const navigate = useNavigate();
   const location = useLocation();
 
