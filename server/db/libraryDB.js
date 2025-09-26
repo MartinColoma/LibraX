@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 
 const dbLibrary = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "hok-library",
+  host: process.env.DB_HOST || "mysql",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "hok-library",
 });
 
 dbLibrary.connect((err) => {

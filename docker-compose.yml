@@ -1,0 +1,111 @@
+services:
+  frontend:
+    build: .
+    image: morphyyyyyy/librax:frontend-1.0
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    depends_on:
+      - book-server
+      - library-server
+      - backend-flask
+
+  book-server:
+    build:
+      context: .
+      dockerfile: ./server/bookServer/Dockerfile
+    image: morphyyyyyy/librax:book-server-1.0
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app/server
+      - /app/server/node_modules
+    environment:
+      - DB_HOST=host.docker.internal   # 👈 connect to XAMPP MySQL
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=hok-book_server
+
+  library-server:
+    build:
+      context: .
+      dockerfile: ./server/libraryServer/Dockerfile
+    image: morphyyyyyy/librax:library-server-1.0
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./server:/app/server
+      - /app/server/node_modules
+    environment:
+      - DB_HOST=host.docker.internal   # 👈 connect to XAMPP MySQL
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=hok-library
+
+
+
+  backend-flask:
+    build: ./flask-server
+    image: morphyyyyyy/librax:backend-flask-1.0
+    ports:
+      - "2000:2000"
+    volumes:
+      - ./flask-server:/app/flask-server
+
+
+  # book-server:
+  #   build:
+  #     context: .
+  #     dockerfile: ./server/bookServer/Dockerfile
+  #   image: morphyyyyyy/librax:book-server-1.0
+  #   ports:
+  #     - "5000:5000"
+  #   volumes:
+  #     - ./server:/app/server
+  #     - /app/server/node_modules
+  #   environment:
+  #     - DB_HOST=mysql
+  #     - DB_USER=root
+  #     - DB_PASSWORD=
+  #     - DB_NAME=hok-book_server
+    # depends_on:
+    #   - mysql
+
+  # library-server:
+  #   build:
+  #     context: .
+  #     dockerfile: ./server/libraryServer/Dockerfile
+  #   image: morphyyyyyy/librax:library-server-1.0
+  #   ports:
+  #     - "5001:5001"
+  #   volumes:
+  #     - ./server:/app/server
+  #     - /app/server/node_modules
+  #   environment:
+  #     - DB_HOST=mysql
+  #     - DB_USER=root
+  #     - DB_PASSWORD=
+  #     - DB_NAME=hok-library
+    # depends_on:
+    #   - mysql
+
+
+#   mysql:
+#     image: mysql:8.0
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: ""
+#       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+#     ports:
+#       - "3307:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#       - ./server/initdb:/docker-entrypoint-initdb.d
+
+
+
+# volumes:
+#   mysql_data:

@@ -1,11 +1,11 @@
 {
   "name": "hok-library-v2",
   "private": true,
-  "proxy": "http://localhost:2000",
+  "proxy": "http://backend-flask:2000",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -13,6 +13,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.87.4",
     "axios": "^1.11.0",
+    "crypto-browserify": "^3.12.1",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

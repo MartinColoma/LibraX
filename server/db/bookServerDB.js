@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 
 const dbBookServer = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "hok-book_server",
+  host: process.env.DB_HOST || "mysql",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "hok-book_server",
 });
 
 dbBookServer.connect((err) => {
