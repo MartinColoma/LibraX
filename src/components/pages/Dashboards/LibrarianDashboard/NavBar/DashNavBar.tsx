@@ -5,11 +5,7 @@ import {
   Users,
   BookOpen,
   // CreditCard,
-<<<<<<< Updated upstream
-  //ClipboardCheck,
-=======
 //  ClipboardCheck,
->>>>>>> Stashed changes
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
