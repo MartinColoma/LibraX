@@ -1,0 +1,564 @@
+/* LoginPage.css - Full Page Layout */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Full Page Container */
+.pageContainer {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  background: linear-gradient(135deg, #f5f1e8 0%, #e8dcc3 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+  overflow: hidden;
+}
+
+/* Two Column Layout */
+.modalContent {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+/* Left side - Image Section (50% width) */
+.imageSection {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(135deg, #432818 0%, #6f1d1b 50%, #99582a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 80px 60px;
+}
+
+.libraryImage {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  transition: opacity 0.8s ease;
+}
+
+.imageSection:hover .libraryImage {
+  opacity: 0.45;
+  transform: scale(1.05);
+  transition: all 0.8s ease;
+}
+
+.imageOverlay {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  max-width: 600px;
+}
+
+.welcomeText {
+  font-size: 20px;
+  font-weight: 300;
+  margin: 0 0 20px 0;
+  opacity: 0.95;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: fadeInDown 0.8s ease;
+}
+
+.libraryTitle {
+  font-size: 80px;
+  font-weight: 900;
+  margin: 0 0 30px 0;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  text-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+.librarySubtitle {
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.9;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 14px 40px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.8s ease 0.4s both;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 0.95;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+/* Right side - Form Section (50% width) */
+.formSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 80px 100px;
+}
+
+.modalBody {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Form Container */
+.modalTitle {
+  font-size: 42px;
+  font-weight: 700;
+  color: #432818;
+  margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
+  max-width: 480px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.modalTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 80px;
+  height: 5px;
+  background: linear-gradient(90deg, #bb9457 0%, #99582a 100%);
+  border-radius: 3px;
+}
+
+.modalLoginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  max-width: 480px;
+  margin-top: 50px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.formGroup label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #432818;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.formError {
+  color: #d62828;
+  font-size: 14px;
+  margin-top: 2px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.formError::before {
+  content: '⚠';
+  font-size: 16px;
+}
+
+.formGroup input {
+  padding: 18px 24px;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fafafa;
+  color: #2d2d2d;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-weight: 400;
+}
+
+.formGroup input:hover {
+  background: #ffffff;
+  border-color: #d4d4d4;
+}
+
+.formGroup input:focus {
+  outline: none;
+  border-color: #bb9457;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(187, 148, 87, 0.12);
+}
+
+.formGroup input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+/* Fix Chrome Autofill Styles */
+.formGroup input:-webkit-autofill,
+.formGroup input:-webkit-autofill:hover,
+.formGroup input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #2d2d2d !important;
+  box-shadow: 0 0 0 1000px #fafafa inset !important;
+  border: 2px solid #e5e5e5 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+.formGroup input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px #ffffff inset, 0 0 0 4px rgba(187, 148, 87, 0.12) !important;
+  border-color: #bb9457 !important;
+}
+
+.passwordInputContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.passwordInputContainer input {
+  padding-right: 60px;
+}
+
+.eyeBtn {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 10px;
+  color: #6f1d1b;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eyeBtn:hover {
+  color: #bb9457;
+  background: rgba(187, 148, 87, 0.1);
+}
+
+.eyeBtn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.btnPrimary {
+  padding: 20px 40px;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #bb9457 0%, #99582a 100%);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  box-shadow: 0 6px 20px rgba(187, 148, 87, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.btnPrimary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.6s ease;
+}
+
+.btnPrimary:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #99582a 0%, #6f1d1b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(153, 88, 42, 0.45);
+}
+
+.btnPrimary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 6px 20px rgba(153, 88, 42, 0.35);
+}
+
+.btnPrimary:disabled {
+  background: linear-gradient(135deg, #d4d4d4 0%, #b8b8b8 100%);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.animateSpin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Email checking indicator */
+.formGroup small {
+  font-size: 13px;
+  font-style: italic;
+  color: #666;
+  margin-top: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .formSection {
+    padding: 60px 80px;
+  }
+  
+  .imageSection {
+    padding: 60px 50px;
+  }
+  
+  .libraryTitle {
+    font-size: 70px;
+    letter-spacing: 6px;
+  }
+}
+
+@media (max-width: 992px) {
+  .modalContent {
+    flex-direction: column;
+  }
+  
+  .imageSection {
+    min-height: 40vh;
+    padding: 60px 40px;
+  }
+  
+  .libraryTitle {
+    font-size: 60px;
+    letter-spacing: 5px;
+  }
+  
+  .welcomeText {
+    font-size: 18px;
+  }
+  
+  .librarySubtitle {
+    font-size: 16px;
+    padding: 12px 35px;
+  }
+  
+  .formSection {
+    min-height: 60vh;
+    padding: 60px 50px;
+  }
+  
+  .modalTitle {
+    font-size: 38px;
+  }
+  
+  .modalLoginForm {
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .imageSection {
+    min-height: 35vh;
+    padding: 50px 30px;
+  }
+  
+  .libraryTitle {
+    font-size: 50px;
+    letter-spacing: 4px;
+    margin-bottom: 25px;
+  }
+  
+  .welcomeText {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+  
+  .librarySubtitle {
+    font-size: 15px;
+    padding: 10px 30px;
+  }
+  
+  .formSection {
+    padding: 50px 40px;
+  }
+  
+  .modalTitle {
+    font-size: 34px;
+  }
+  
+  .modalLoginForm {
+    gap: 28px;
+    max-width: 100%;
+  }
+  
+  .formGroup input {
+    padding: 16px 20px;
+    font-size: 15px;
+  }
+  
+  .btnPrimary {
+    padding: 18px 36px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    background: #ffffff;
+  }
+  
+  .imageSection {
+    min-height: 30vh;
+    padding: 40px 25px;
+  }
+  
+  .libraryTitle {
+    font-size: 40px;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+  }
+  
+  .welcomeText {
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+  }
+  
+  .librarySubtitle {
+    font-size: 13px;
+    padding: 8px 25px;
+  }
+  
+  .formSection {
+    padding: 40px 30px;
+  }
+  
+  .modalTitle {
+    font-size: 30px;
+    margin-bottom: 15px;
+  }
+  
+  .modalTitle::after {
+    width: 60px;
+    height: 4px;
+  }
+  
+  .modalLoginForm {
+    gap: 24px;
+    margin-top: 35px;
+  }
+  
+  .formGroup label {
+    font-size: 14px;
+  }
+  
+  .formGroup input {
+    padding: 15px 18px;
+    font-size: 14px;
+  }
+  
+  .btnPrimary {
+    padding: 16px 32px;
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+}
+
+/* Focus visible for accessibility */
+.btnPrimary:focus-visible,
+.eyeBtn:focus-visible,
+.formGroup input:focus-visible {
+  outline: 3px solid #bb9457;
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Print styles */
+@media print {
+  .pageContainer {
+    background: white;
+  }
+  
+  .imageSection {
+    display: none;
+  }
+  
+  .formSection {
+    padding: 40px;
+  }
+}

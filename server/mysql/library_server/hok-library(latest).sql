@@ -22,72 +22,83 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `hok-library` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `hok-library`;
-
+-- --------------------------------------------------------
+-- Table structure for table `attendance`
 -- --------------------------------------------------------
 
+CREATE TABLE `attendance` (
+  `attendance_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `member_id` VARCHAR(10) NOT NULL,
+  `tap_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`member_id`) REFERENCES `members`(`member_id`)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `members`
+--
+CREATE TABLE `members` (
+  `member_id` varchar(10) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
+  `student_id` varchar(20) NOT NULL, -- e.g. university-issued student number
+  `nfc_uid` varchar(20) DEFAULT NULL, -- ✅ NFC card UID for login
+  `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `password_hash` varchar(255) NOT NULL,
+  `date_registered` date DEFAULT curdate(),
+  `last_login` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- --------------------------------------------------------
+-- Trigger for table `members`
+-- --------------------------------------------------------
+
+DELIMITER $$
+CREATE TRIGGER `before_insert_members`
+BEFORE INSERT ON `members`
+FOR EACH ROW
+BEGIN
+    DECLARE random_digits CHAR(6);
+    SET random_digits = LPAD(FLOOR(RAND() * 1000000), 6, '0');
+    SET NEW.member_id = CONCAT('M', YEAR(CURDATE()), random_digits);
+END
+$$
+DELIMITER ;
+-- --------------------------------------------------------
+-- Indexes for table `members`
+-- --------------------------------------------------------
+
+ALTER TABLE `members`
+  ADD PRIMARY KEY (`member_id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `student_id` (`student_id`),
+  ADD UNIQUE KEY `nfc_uid` (`nfc_uid`); -- ✅ Each card tied to one student
 --
 -- Table structure for table `login_history`
 --
 
+DROP TABLE IF EXISTS `login_history`;
+
 CREATE TABLE `login_history` (
-  `history_id` varchar(10) NOT NULL,
-  `staff_id` varchar(36) NOT NULL,
-  `login_time` datetime DEFAULT current_timestamp(),
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` varchar(255) DEFAULT NULL
+  `history_id` VARCHAR(36) NOT NULL,
+  `user_type` ENUM('staff', 'member') NOT NULL,
+  `staff_id` VARCHAR(36) DEFAULT NULL,
+  `member_id` VARCHAR(36) DEFAULT NULL,
+  `login_time` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `ip_address` VARCHAR(45) DEFAULT NULL,
+  `user_agent` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`history_id`),
+  CONSTRAINT `fk_login_staff`
+    FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_login_member`
+    FOREIGN KEY (`member_id`) REFERENCES `members` (`member_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `login_history`
---
-
-INSERT INTO `login_history` (`history_id`, `staff_id`, `login_time`, `ip_address`, `user_agent`) VALUES
-('1065982261', '2025000144', '2025-08-05 21:27:55', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1285588792', '2025459329', '2025-08-06 22:22:54', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1393028785', '2025000144', '2025-08-05 21:39:43', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1422182727', '2025000144', '2025-08-08 18:41:06', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1521339096', '2025185866', '2025-08-08 19:00:38', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1754326564', '2025000144', '2025-08-08 17:38:27', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1791308914', '2025459329', '2025-08-05 21:48:58', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('1889038983', '2025000144', '2025-08-10 20:04:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('2414992644', '2025000144', '2025-08-05 21:55:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('2441295617', '2025000144', '2025-08-08 17:29:44', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('2719109803', '2025000144', '2025-08-08 16:15:13', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('2820616890', '2025000144', '2025-08-08 17:49:50', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('3484949590', '2025000144', '2025-08-05 22:14:55', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('3528995531', '2025000144', '2025-08-12 10:26:54', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4084572449', '2025000144', '2025-08-08 17:25:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4297424339', '2025000144', '2025-08-07 01:39:07', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4377733876', '2025000144', '2025-08-08 18:06:59', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4474384949', '2025000144', '2025-08-08 17:49:34', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('4670705201', '2025000144', '2025-08-08 17:53:25', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('5218149320', '2025000144', '2025-08-09 12:28:36', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('5368883973', '2025000144', '2025-08-08 17:19:04', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('5378101909', '2025000144', '2025-08-08 18:23:42', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('5633713705', '2025459329', '2025-08-08 17:56:21', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('5772441813', '2025000144', '2025-08-09 12:01:34', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6625924118', '2025000144', '2025-08-08 17:43:40', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6703924577', '2025000144', '2025-08-08 18:13:21', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6723038461', '2025000144', '2025-08-08 19:15:17', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6851903991', '2025459329', '2025-08-08 17:33:33', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('6862493779', '2025185866', '2025-08-05 22:15:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('7112315413', '2025000144', '2025-08-08 17:19:18', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('7690110611', '2025000144', '2025-08-08 17:44:12', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('7864359348', '2025185866', '2025-08-05 21:58:57', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('7890554097', '2025000144', '2025-08-05 21:58:01', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8025215421', '2025000144', '2025-08-08 16:33:46', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8155679382', '2025000144', '2025-08-08 18:04:09', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8245325949', '2025459329', '2025-08-05 21:28:59', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8577313434', '2025000144', '2025-08-07 01:38:27', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8850786647', '2025000144', '2025-08-08 17:55:47', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('8954886296', '2025459329', '2025-08-08 17:33:55', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9335245863', '2025000144', '2025-08-08 17:19:35', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9467820924', '2025000144', '2025-08-05 21:27:02', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9486507619', '2025459329', '2025-08-06 19:21:29', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9510812359', '2025459329', '2025-08-05 22:19:48', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9734536483', '2025000144', '2025-08-06 19:05:10', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9857770480', '2025185866', '2025-08-05 21:34:42', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'),
-('9954016767', '2025000144', '2025-08-06 19:15:07', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
 
 -- --------------------------------------------------------
 
@@ -105,6 +116,7 @@ CREATE TABLE `staff` (
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `nfc_uid` varchar(20) DEFAULT NULL, -- ✅ NFC card UID column
   `date_hired` date DEFAULT curdate(),
   `last_login` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -125,7 +137,10 @@ INSERT INTO `staff` (`staff_id`, `first_name`, `last_name`, `email`, `phone_numb
 -- Triggers `staff`
 --
 DELIMITER $$
-CREATE TRIGGER `before_insert_staff` BEFORE INSERT ON `staff` FOR EACH ROW BEGIN
+CREATE TRIGGER `before_insert_staff` 
+BEFORE INSERT ON `staff` 
+FOR EACH ROW 
+BEGIN
     DECLARE random_digits CHAR(6);
     SET random_digits = LPAD(FLOOR(RAND() * 1000000), 6, '0');
     SET NEW.staff_id = CONCAT(YEAR(CURDATE()), random_digits);
@@ -136,6 +151,7 @@ DELIMITER ;
 --
 -- Indexes for dumped tables
 --
+
 
 --
 -- Indexes for table `login_history`
@@ -150,7 +166,8 @@ ALTER TABLE `login_history`
 ALTER TABLE `staff`
   ADD PRIMARY KEY (`staff_id`),
   ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `nfc_uid` (`nfc_uid`); -- ✅ Ensures each card is unique
 
 --
 -- Constraints for dumped tables

@@ -4,17 +4,17 @@ import { LogIn, IdCard } from 'lucide-react';
 import './/Home.css';
 import usePageMeta from '../../../../hooks/usePageMeta';
 import LoginPage from '../Login/LoginModal';
+import Att_Modal from '../MemberPopup/AttendanceModal'
 
 const Home: React.FC = () => {
   usePageMeta("LibraX | AIoT Library Kiosk", "HoKLibrary 128x128.png");
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleRedirect = (path: string) => {
-    navigate(path);
-  };
+
 
   const loginmodal = location.pathname === '/login';
+  const attendancemodal = location.pathname === '/attendance';
 
   return (
     <>
@@ -47,8 +47,11 @@ const Home: React.FC = () => {
 
           <button
             className="landing-btn guest-btn"
-            onClick={() => handleRedirect('/guest')}
-          >
+            onClick={() =>
+              navigate('/attendance', {
+                state: { backgroundLocation: location },
+              })
+            }          >
             <IdCard size={24} />
             TAP ID
           </button>
@@ -59,6 +62,13 @@ const Home: React.FC = () => {
         <LoginPage
           onClose={() =>
             navigate(location.state?.backgroundLocation || '/login')
+          }
+        />
+      )}
+      {attendancemodal && (
+        <Att_Modal
+          onClose={() =>
+            navigate(location.state?.backgroundLocation || '/attendance')
           }
         />
       )}

@@ -58,3 +58,27 @@
   text-align: left;
   letter-spacing: 0.5px;
 }
+/* Introductory message for the dashboard */
+.intro-message {
+  background-color: var(--muji-light-grey); /* subtle warm grey card */
+  border-left: 4px solid var(--muji-red);   /* accent MUJI red */
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.intro-message h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--muji-brown);
+  margin-bottom: 8px;
+}
+
+.intro-message p {
+  font-size: 1rem;
+  color: var(--muji-dark);
+  line-height: 1.6;
+  margin: 0;
+}

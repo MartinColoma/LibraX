@@ -12,11 +12,12 @@ const Dash_Reserve: React.FC = () => {
       sessionStorage.getItem("sidebarCollapsed") === "true"
     );
     const navigate = useNavigate();
-    useEffect(() => {
-      if (!sessionStorage.getItem("staff_name")) {
-        navigate("/login", { replace: true });
-      }
-    }, [navigate]);
+     useEffect(() => {
+       const userType = sessionStorage.getItem("user_type");
+       if (userType !== "staff") {
+         navigate("/login", { replace: true });
+       }
+     }, [navigate]);
   return (
     <div className="page-layout">
       <Sidebar onCollapse={(state: boolean) => {

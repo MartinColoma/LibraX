@@ -1,0 +1,115 @@
+:root {
+  --muji-red: #6d1f25;
+  --muji-brown: #7d5a44;
+  --muji-grey: #bfb8af;
+  --muji-ivory: #f5f3ee;
+  --muji-dark: #1f1f1f;
+  --muji-light-grey: #e8e5e0;
+}
+
+.member-sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background-color: var(--muji-ivory);
+  border-right: 1px solid var(--muji-light-grey);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s ease;
+}
+
+.member-sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  font-weight: bold;
+  color: var(--muji-red);
+  font-size: 1.2rem;
+  border-bottom: 1px solid var(--muji-light-grey);
+}
+
+.collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  color: var(--muji-dark);
+  text-decoration: none;
+  transition: background 0.2s;
+  font-size: 1rem;
+}
+
+.sidebar-link:hover {
+  background-color: var(--muji-light-grey);
+}
+
+.sidebar-link.active {
+  background-color: var(--muji-red);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.sidebar-icon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.member-sidebar.collapsed .sidebar-icon {
+  margin-right: 0;
+}
+
+.sidebar-text {
+  white-space: nowrap;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--muji-light-grey);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.username {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muji-dark);
+  text-align: center;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muji-red);
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.logout-btn:hover {
+  background-color: var(--muji-light-grey);
+}

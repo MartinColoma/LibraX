@@ -17,10 +17,13 @@ app.use(cookieParser());
 const studentsRoute = require("./routes/students");
 const staffRoute = require("./routes/staff");
 const authRoute = require("./routes/auth");
+const usersRoute = require("./routes/users");
 
 // Mount routes
 app.use("/staff", staffRoute);
-app.use("/auth", authRoute);
 app.use("/students", studentsRoute);
+app.use("/auth", authRoute);
+app.use("/users", usersRoute);
+
 
 app.listen(5001, () => console.log("✅ Library Server running on port 5001"));

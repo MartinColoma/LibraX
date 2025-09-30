@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import styles from './CreateAccountModal.module.css';
+import styles from './Create_NewMem.module.css';
 import { X, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 
@@ -8,15 +8,16 @@ interface Props {
   onClose: () => void;
 }
 
-const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
+const CreateNewMemberModal: React.FC<Props> = ({ onClose }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    username: '',
     phoneNumber: '',
-    role: 'Librarian',
-    password: ''
+    studentId: '',
+    nfcUid: '',
+    status: 'Active',
+    password: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -25,43 +26,41 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    if (name === 'email' && !formData.username) {
-      setFormData(prev => ({ ...prev, username: value.split('@')[0] }));
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const fullName = `${formData.firstName} ${formData.lastName}`.trim();
-
     try {
-      const response = await axios.post('http://localhost:5001/users/staff', {
-        fullName,
+      const response = await axios.post('http://localhost:5001/users/member', {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
         email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        phoneNumber: formData.phoneNumber
+        phone_number: formData.phoneNumber,
+        student_id: formData.studentId,
+        nfc_uid: formData.nfcUid,
+        status: formData.status,
+        password: formData.password, // ✅ included for manual login fallback
       });
 
-      alert(response.data.message || 'Staff account created successfully!');
+      alert(response.data.message || 'Member created successfully!');
 
       setFormData({
         firstName: '',
         lastName: '',
         email: '',
-        username: '',
         phoneNumber: '',
-        role: 'Librarian',
-        password: ''
+        studentId: '',
+        nfcUid: '',
+        status: 'Active',
+        password: '',
       });
 
       onClose();
     } catch (error: any) {
       if (error.response) {
-        alert(error.response.data.error || 'Failed to create staff account');
+        alert(error.response.data.error || 'Failed to create member');
       } else {
         alert('Error connecting to the server');
       }
@@ -76,7 +75,7 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
         <button onClick={onClose} className={styles.modalCloseBtn}>
           <X size={20} />
         </button>
-        <h2 className={styles.modalTitle}>Create Staff Account</h2>
+        <h2 className={styles.modalTitle}>Register New Member</h2>
 
         <form onSubmit={handleSubmit} className={styles.modalForm}>
           <div className={styles.formRow}>
@@ -117,20 +116,6 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label>Username</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Auto or edit"
-                required
-              />
-            </div>
-          </div>
-
-          <div className={styles.formRow}>
-            <div className={styles.formGroup}>
               <label>Phone Number</label>
               <input
                 type="tel"
@@ -140,23 +125,46 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
                 placeholder="Optional"
               />
             </div>
+          </div>
+
+          <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>Role</label>
-              <select
-                name="role"
-                value={formData.role}
+              <label>Student ID</label>
+              <input
+                type="text"
+                name="studentId"
+                value={formData.studentId}
                 onChange={handleChange}
+                placeholder="University-issued ID"
                 required
-              >
-                <option value="Librarian">Librarian</option>
-                <option value="Assistant">Assistant</option>
-                <option value="Manager">Manager</option>
-                <option value="Admin">Admin</option>
-              </select>
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label>NFC UID</label>
+              <input
+                type="text"
+                name="nfcUid"
+                value={formData.nfcUid}
+                onChange={handleChange}
+                placeholder="Scan or enter NFC UID"
+              />
             </div>
           </div>
 
-          {/* Password Field with Show/Hide Button */}
+          <div className={styles.formGroup}>
+            <label>Status</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              required
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          {/* ✅ Password Field with Show/Hide Toggle */}
           <div className={styles.formGroup}>
             <label>Password</label>
             <div className={styles.passwordInputContainer}>
@@ -185,7 +193,7 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
             className={styles.btnPrimary}
             disabled={loading}
           >
-            {loading ? 'Creating...' : 'Create Account'}
+            {loading ? 'Registering...' : 'Register Member'}
           </button>
         </form>
       </div>
@@ -194,4 +202,4 @@ const CreateAccountModal: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-export default CreateAccountModal;
+export default CreateNewMemberModal;

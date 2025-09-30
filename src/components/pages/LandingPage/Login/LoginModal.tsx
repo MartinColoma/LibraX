@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { Eye, EyeOff, Loader2, X } from "lucide-react";
 import styles from "./LoginModal.module.css";
 import libraryImage from "../../../images/library_cover.png";
+import Att_Modal from '../MemberPopup/AttendanceModal'
 
 interface Props {
   onClose: () => void;
@@ -14,15 +16,17 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [checkingEmail, setCheckingEmail] = useState(false); // email check in progress
+  const [checkingEmail, setCheckingEmail] = useState(false);
 
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const attendancemodal = location.pathname === '/attendance';
 
   useEffect(() => {
     emailInputRef.current?.focus();
   }, []);
 
-  // Validate basic format for email & password locally
   const validateForm = () => {
     const newErrors = { email: "", password: "" };
     let isValid = true;
@@ -47,12 +51,8 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
     return isValid;
   };
 
-  // Check if email exists in DB by calling backend API
   const checkEmailExists = async (email: string) => {
-    if (!email || errors.email) {
-      // skip if empty or format error
-      return;
-    }
+    if (!email || errors.email) return;
     setCheckingEmail(true);
     try {
       const response = await axios.get("http://localhost:5001/auth/check-email", {
@@ -61,12 +61,10 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
       if (!response.data.exists) {
         setErrors((prev) => ({ ...prev, email: "Email not registered" }));
       } else {
-        // Clear email error if previously set
         setErrors((prev) => ({ ...prev, email: "" }));
       }
-    } catch {
-      // Optionally handle error gracefully, e.g.:
-      // setErrors(prev => ({ ...prev, email: "Error checking email" }));
+    } catch (error) {
+      console.error("Error checking email:", error);
     } finally {
       setCheckingEmail(false);
     }
@@ -76,13 +74,11 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear errors for that field on change
     if (errors[name as keyof typeof errors]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  // Call checkEmailExists when email input loses focus
   const handleEmailBlur = () => {
     checkEmailExists(formData.email.trim());
   };
@@ -90,14 +86,15 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading || checkingEmail || !validateForm()) return;
-
-    if (errors.email) return; // Don't submit if email error exists (including non-existence)
+    if (errors.email) return;
 
     setIsLoading(true);
 
     try {
+      console.log("Attempting login with email:", formData.email);
+
       const response = await axios.post(
-        "http://localhost:5001/auth",
+        "http://localhost:5001/auth/login",
         {
           email: formData.email.trim(),
           password: formData.password.trim(),
@@ -105,25 +102,64 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
         { withCredentials: true }
       );
 
-      const staff = response.data.staff;
-      const displayName =
-        staff?.full_name || staff?.username || staff?.email || "Unknown User";
+      console.log("Login response received:", response.data);
 
-      sessionStorage.setItem("staff_name", displayName);
-      window.location.href = "/librarian/dashboard/home";
+      const user = response.data.user;
+
+      if (!user) {
+        console.error("No user object in response");
+        alert("Login failed: Invalid response from server");
+        return;
+      }
+
+      console.log("User data:", {
+        user_type: user.user_type,
+        role: user.role,
+        full_name: user.full_name,
+      });
+
+      const displayName =
+        user?.full_name || user?.username || user?.email || "Unknown User";
+
+      // Store user info in sessionStorage
+      try {
+        sessionStorage.setItem("user_name", displayName);
+        sessionStorage.setItem("user_role", user.role || "");
+        sessionStorage.setItem("user_type", user.user_type || "");
+        console.log("User data stored in sessionStorage");
+      } catch (storageError) {
+        console.error("SessionStorage error:", storageError);
+      }
+
+
+      if (user.user_type === "staff") {
+        if (user.role === "librarian") {
+          window.location.href = "/librarian/dashboard/home"; // guaranteed to redirect
+        } 
+        else{
+          window.location.href = "/librarian/dashboard/home"; // guaranteed to redirect
+        }
+      } else if (user.user_type === "member") {
+          window.location.href = "/member/dashboard/home"; // guaranteed to redirect
+      }
+
+
+
     } catch (error: any) {
+      console.error("Login error:", error);
+
       if (error.response?.status === 401) {
         setErrors((prev) => ({
           ...prev,
-          password: "Incorrect password",
+          password: "Incorrect email or password",
         }));
       } else if (error.request) {
         alert(
-          "Unable to connect to the server. \nPlease check your network or try again later."
+          "Unable to connect to the server. Check your network and ensure the backend is running on port 5001."
         );
       } else {
         console.error("Axios error:", error.message);
-        alert("An unexpected error occurred.");
+        alert("Unexpected error occurred: " + error.message);
       }
     } finally {
       setIsLoading(false);
@@ -132,7 +168,7 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
 
   const isFormInvalid =
     !formData.email ||
-    !!errors.email || // block if email format or existence error
+    !!errors.email ||
     !formData.password ||
     formData.password.length < 6;
 
@@ -142,13 +178,13 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
         <button className={styles.modalCloseBtn} onClick={onClose}>
           <X size={18} />
         </button>
-        
+
         <div className={styles.modalBody}>
           {/* Left side - Library Image */}
           <div className={styles.imageSection}>
-            <img 
-              src={libraryImage} 
-              alt="Library" 
+            <img
+              src={libraryImage}
+              alt="Library"
               className={styles.libraryImage}
             />
             <div className={styles.imageOverlay}>
@@ -179,7 +215,9 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
                   disabled={isLoading}
                 />
                 {checkingEmail && (
-                  <small style={{ color: "#666" }}>Checking email existence...</small>
+                  <small style={{ color: "#666" }}>
+                    Checking email existence...
+                  </small>
                 )}
               </div>
 
@@ -215,7 +253,8 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
               >
                 {isLoading ? (
                   <span className={styles.loadingSpinner}>
-                    <Loader2 size={16} className={styles.animateSpin} /> Signing In...
+                    <Loader2 size={16} className={styles.animateSpin} /> Signing
+                    In...
                   </span>
                 ) : (
                   "Login"
@@ -225,6 +264,13 @@ const LoginPage: React.FC<Props> = ({ onClose }) => {
           </div>
         </div>
       </div>
+      {attendancemodal && (
+        <Att_Modal
+          onClose={() =>
+            navigate(location.state?.backgroundLocation || '/attendance')
+          }
+        />
+      )}
     </div>,
     document.body
   );

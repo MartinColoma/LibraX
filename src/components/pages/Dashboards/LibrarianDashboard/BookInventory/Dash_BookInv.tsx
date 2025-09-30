@@ -21,11 +21,12 @@ const Dash_BookInv: React.FC = () => {
   usePageMeta("Dashboard - Book Inventory", "HoKLibrary 128x128.png");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!sessionStorage.getItem("staff_name")) {
-      navigate("/login", { replace: true });
-    }
-  }, [navigate]);
+    useEffect(() => {
+      const userType = sessionStorage.getItem("user_type");
+      if (userType !== "staff") {
+        navigate("/login", { replace: true });
+      }
+    }, [navigate]);
 
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);

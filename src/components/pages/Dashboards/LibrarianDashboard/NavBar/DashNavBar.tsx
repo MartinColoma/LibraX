@@ -4,7 +4,7 @@ import {
   LayoutDashboard,
   Users,
   BookOpen,
-  CreditCard,
+  // CreditCard,
   ClipboardCheck,
   MoreHorizontal,
   ChevronLeft,
@@ -29,7 +29,18 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const staffName = sessionStorage.getItem("staff_name") || "Unknown User";
+ const [staffName, setStaffName] = useState(
+  sessionStorage.getItem("user_name") || "Unknown User"
+);
+
+  // Listen for storage changes (optional: if login changes in another tab)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setStaffName(sessionStorage.getItem("user_name") || "Unknown User");
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const navItems = [
     {
@@ -47,16 +58,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
       path: "/librarian/dashboard/book-inventory",
       icon: <BookOpen size={18} />,
     },
-    {
-      name: "Payments",
-      path: "/librarian/dashboard/payments",
-      icon: <CreditCard size={18} />,
-    },
-    {
-      name: "Reservation",
-      path: "/librarian/dashboard/reservation",
-      icon: <ClipboardCheck size={18} />,
-    },
+    // {
+    //   name: "Payments",
+    //   path: "/librarian/dashboard/payments",
+    //   icon: <CreditCard size={18} />,
+    // },
+    // {
+    //   name: "Reservation",
+    //   path: "/librarian/dashboard/reservation",
+    //   icon: <ClipboardCheck size={18} />,
+    // },
   ];
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
@@ -85,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
   const handleLogout = async () => {
     try {
       await axios.post("http://localhost:5001/auth/logout", {}, { withCredentials: true });
-      sessionStorage.removeItem("staff_name");
+      sessionStorage.removeItem("user_name");
       localStorage.removeItem("staff");
       window.location.replace("/");
     } catch (error) {

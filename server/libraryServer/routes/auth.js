@@ -4,24 +4,24 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dbLibrary = require("../../db/libraryDB");
 
-const JWT_SECRET = "super_secret_key_change_this"; // Store in .env in production
+const JWT_SECRET = "super_secret_key_change_this"; // put in .env
 
 function generateHistoryId() {
   return Math.floor(1000000000 + Math.random() * 9000000000).toString();
 }
 
-// POST /auth - Staff login
-router.post("/", (req, res) => {
+// POST /auth/login
+router.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
-  const sql = `SELECT * FROM staff WHERE email = ? LIMIT 1`;
+  const sql = `SELECT * FROM users WHERE email = ? LIMIT 1`;
   dbLibrary.query(sql, [email], async (err, results) => {
     if (err) {
-      console.error(err);
+      console.error("Database error:", err);
       return res.status(500).json({ error: "Database query error" });
     }
 
@@ -29,74 +29,90 @@ router.post("/", (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const staff = results[0];
-    const isMatch = await bcrypt.compare(password, staff.password_hash);
+    const user = results[0];
+    
+    // Add logging for debugging
+    console.log("User found:", {
+      user_id: user.user_id,
+      email: user.email,
+      user_type: user.user_type,
+      role: user.role,
+      username: user.username
+    });
+
+    const isMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    // 1️⃣ Update last_login
-    const updateSql = `UPDATE staff SET last_login = NOW() WHERE staff_id = ?`;
-    dbLibrary.query(updateSql, [staff.staff_id], (updateErr) => {
+    // Update last_login
+    const updateSql = `UPDATE users SET last_login = NOW() WHERE user_id = ?`;
+    dbLibrary.query(updateSql, [user.user_id], (updateErr) => {
       if (updateErr) {
-        console.error(updateErr);
-        return res.status(500).json({ error: "Failed to update last_login" });
+        console.error("Error updating last_login:", updateErr);
       }
+    });
 
-      // 2️⃣ Insert login history
-      const historyId = generateHistoryId();
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const userAgent = req.headers['user-agent'] || null;
+    // Insert login history
+    const historyId = generateHistoryId();
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const userAgent = req.headers['user-agent'] || null;
 
-      const insertHistory = `
-        INSERT INTO login_history (history_id, staff_id, ip_address, user_agent)
-        VALUES (?, ?, ?, ?)
-      `;
+    const insertHistory = `
+      INSERT INTO login_history (history_id, user_id, user_type, ip_address, user_agent)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    dbLibrary.query(insertHistory, [historyId, user.user_id, user.user_type, ip, userAgent], (histErr) => {
+      if (histErr) {
+        console.error("Error inserting login history:", histErr);
+      }
+    });
 
-      dbLibrary.query(insertHistory, [historyId, staff.staff_id, ip, userAgent], (historyErr) => {
-        if (historyErr) console.error("Login history insert error:", historyErr);
+    // Generate JWT
+    const token = jwt.sign(
+      { 
+        user_id: user.user_id, 
+        email: user.email, 
+        role: user.role, 
+        user_type: user.user_type 
+      },
+      JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
-        // 3️⃣ Generate JWT
-        const token = jwt.sign(
-          { staff_id: staff.staff_id, email: staff.email, role: staff.role },
-          JWT_SECRET,
-          { expiresIn: "2h" }
-        );
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 2 * 60 * 60 * 1000
+    });
 
-        // 4️⃣ Set HttpOnly Cookie
-        res.cookie("auth_token", token, {
-          httpOnly: true,
-          secure: false, // set true if using HTTPS
-          sameSite: "lax",
-          maxAge: 2 * 60 * 60 * 1000 // 2 hours
-        });
+    // Prepare user response
+    delete user.password_hash;
+    user.full_name = `${user.first_name} ${user.last_name}`.trim();
 
-        // 5️⃣ Return sanitized user info
-        delete staff.password_hash;
-        staff.last_login = new Date();
-        staff.full_name = `${staff.first_name} ${staff.last_name}`.trim();
+    console.log("Login successful, sending response:", {
+      user_type: user.user_type,
+      role: user.role,
+      full_name: user.full_name
+    });
 
-        res.status(200).json({
-          // message: "Login successful",
-          staff,
-          login_history_id: historyId
-        });
-      });
+    res.status(200).json({
+      user: user,
+      login_history_id: historyId
     });
   });
 });
 
-// POST /auth/logout - Clear cookie and logout
+// POST /auth/logout
 router.post("/logout", (req, res) => {
   res.clearCookie("auth_token", {
     httpOnly: true,
-    secure: false, // set true if using HTTPS
+    secure: false,
     sameSite: "lax",
   });
-  return res.status(200).json({ 
-  //  message: "Logged out successfully" 
-  });
+  return res.status(200).json({ message: "Logged out successfully" });
 });
 
 // GET /auth/check-email?email=someone@example.com
@@ -106,20 +122,15 @@ router.get("/check-email", (req, res) => {
     return res.status(400).json({ error: "Email query parameter required" });
   }
 
-  const sql = `SELECT 1 FROM staff WHERE email = ? LIMIT 1`;
+  const sql = `SELECT 1 FROM users WHERE email = ? LIMIT 1`;
   dbLibrary.query(sql, [email], (err, results) => {
     if (err) {
       console.error("DB error checking email existence:", err);
       return res.status(500).json({ error: "Database query error" });
     }
 
-    if (results.length > 0) {
-      res.json({ exists: true });
-    } else {
-      res.json({ exists: false });
-    }
+    res.json({ exists: results.length > 0 });
   });
 });
-
 
 module.exports = router;

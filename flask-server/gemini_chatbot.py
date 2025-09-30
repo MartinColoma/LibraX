@@ -32,7 +32,7 @@ def chat_with_gemini(message: str) -> str:
         return "Sorry, I can only help with library-related inquiries."
 
     url = (
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent"
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
     )
     headers = {"Content-Type": "application/json"}
     params = {"key": API_KEY}

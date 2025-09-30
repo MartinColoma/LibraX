@@ -6,13 +6,23 @@ import { createPortal } from 'react-dom';
 import PageNotFound from './components/pages/PageNotFound';
 import DbTest from './components/pages/BookTest';
 import LandingPage from './components/pages/LandingPage/Home/Home';
+
+
+//Librarian
 import LibDash_Home from './components/pages/Dashboards/LibrarianDashboard/Dashboard/Dash_Home';
 import LibDash_Acc from './components/pages/Dashboards/LibrarianDashboard/Accounts/Dash_Acc';
 import LibDash_BookInv from './components/pages/Dashboards/LibrarianDashboard/BookInventory/Dash_BookInv';
 import LibDash_Pay from './components/pages/Dashboards/LibrarianDashboard/Payments/Dash_Payment';
 import LibDash_Reserve from './components/pages/Dashboards/LibrarianDashboard/Reservation/Dash_Reserve';
+
+//Member
+import MemDash_Home from './components/pages/Dashboards/MemberDashboard/Dashboard/MD_Home';
+
+//AI chatbot
 import Flask_Server from './components/pages/test'
 // Modals
+import Att_Modal from './components/pages/LandingPage/MemberPopup/AttendanceModal';
+
 import LoginModal from './components/pages/LandingPage/Login/LoginModal';
 import SwitchAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/SwitchAccountModal';
 import CreateAccountModal from './components/pages/Dashboards/LibrarianDashboard/NavBar/Modals/CreateAccountModal';
@@ -57,6 +67,9 @@ const AppRoutes: React.FC = () => {
         <Route path="/librarian/dashboard/book-inventory" element={<LibDash_BookInv />} />
         <Route path="/librarian/dashboard/payments" element={<LibDash_Pay />} />
         <Route path="/librarian/dashboard/reservation" element={<LibDash_Reserve />} />
+        
+        {/* Member Dashboard Routes */}
+        <Route path="/member/dashboard/home" element={<MemDash_Home />} />
 
       </Routes>
 
@@ -67,6 +80,13 @@ const AppRoutes: React.FC = () => {
             path="/login"
             element={createPortal(
               <LoginModal onClose={() => window.history.back()} />,
+              document.body
+            )}
+          />
+          <Route
+            path="/attendance"
+            element={createPortal(
+              <Att_Modal onClose={() => window.history.back()} />,
               document.body
             )}
           />
