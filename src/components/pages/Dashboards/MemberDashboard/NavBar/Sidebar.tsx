@@ -39,7 +39,7 @@ const SimpleSidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
       await axios.post("http://localhost:5001/auth/logout", {}, { withCredentials: true });
       sessionStorage.removeItem("user_name");
       localStorage.removeItem("member");
-      window.location.replace("/login");
+      window.location.replace("/");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -48,9 +48,9 @@ const SimpleSidebar: React.FC<SidebarProps> = ({ onCollapse }) => {
   return (
     <aside className={`sidebar ${collapsed ? "collapsed" : ""}`}>
       <div className="sidebar-header">
-        <div className="logo">
-          📚 <span className="logo-text">{collapsed ? "" : "Library"}</span>
-        </div>
+          <div className="logo">
+            📚 <span className="logo-text">LibraX AIoT Kiosk  </span>
+          </div>
         <button className="collapse-btn" onClick={toggleCollapse}>
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </button>

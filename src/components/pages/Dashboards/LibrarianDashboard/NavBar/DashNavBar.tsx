@@ -5,7 +5,7 @@ import {
   Users,
   BookOpen,
   // CreditCard,
-  ClipboardCheck,
+  //ClipboardCheck,
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
