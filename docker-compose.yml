@@ -28,6 +28,8 @@ services:
       - DB_USER=root
       - DB_PASSWORD=
       - DB_NAME=hok-book_server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   library-server:
     build:
@@ -44,7 +46,8 @@ services:
       - DB_USER=root
       - DB_PASSWORD=
       - DB_NAME=hok-library
-
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 
   backend-flask:
